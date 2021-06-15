@@ -17,21 +17,21 @@ const User = db.define("user", {
   },
   firstname: {
     type: Sequelize.STRING,
-    // allowNull: false,
+    allowNull: false,
     validate: {
       notEmpty: true,
     },
   },
   lastname: {
     type: Sequelize.STRING,
-    // allowNull: false,
+    allowNull: false,
     validate: {
       notEmpty: true,
     },
   },
   email: {
     type: Sequelize.STRING,
-    // allowNull: false,
+    allowNull: false,
     unique: true,
     validate: {
       isEmail: true,
