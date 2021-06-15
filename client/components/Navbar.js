@@ -1,15 +1,15 @@
-import React from 'react';
-import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
-import { logout } from '../store';
+import React from "react";
+import { connect } from "react-redux";
+import { Link } from "react-router-dom";
+import { logout } from "../store";
 
-import { AppBar, Toolbar, Typography } from '@material-ui/core';
+import { AppBar, Toolbar, Typography } from "@material-ui/core";
 
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles((theme) => ({
   header: {
-    position: 'sticky',
+    position: "sticky",
   },
 }));
 
@@ -41,7 +41,10 @@ const Navbar = (props) => {
     <>
       <AppBar className={classes.header}>
         <Toolbar>
-          <Typography variant="h4">Grace Shopper Team 6</Typography>
+          <Typography variant="h4">
+            <Link to="/">Grace Shopper Team 6 </Link>
+          </Typography>
+
           <nav>
             {props.isLoggedIn ? (
               <div>
