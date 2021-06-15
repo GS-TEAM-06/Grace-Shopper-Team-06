@@ -1,6 +1,6 @@
 const { SequelizeScopeError } = require("sequelize");
 const Sequelize = require("sequelize");
-const db = require("./database");
+const db = require("../db");
 
 const Address = db.define("address", {
   address: {

@@ -1,7 +1,7 @@
 const { db } = require("./server/db");
-const Cards = require("./server/db/Cards");
-const Address = require("./server/db/Address");
-const User = require("./server/db/user");
+const Cards = require("./server/db/models/Cards");
+const Address = require("./server/db/models/Address");
+const User = require("./server/db/models/user");
 
 const cards = [
   {
@@ -108,12 +108,12 @@ const seed = async () => {
     await db.sync({ force: true });
     await Promise.all(cards.map((cards) => Cards.create(cards))).then(() =>
       Promise.all(address.map((address) => Address.create(address))).then(() =>
-        Promise.all(user.map((user) => User.create(user)))
+        Promise.all(user.map((users) => User.create(users)))
       )
     );
     // seed your database here!
   } catch (err) {
-    console.log(red(err));
+    console.log(err);
   }
 };
 

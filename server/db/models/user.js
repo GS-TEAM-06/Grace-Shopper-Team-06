@@ -12,31 +12,31 @@ const User = db.define("user", {
     unique: true,
     allowNull: false,
   },
+  password: {
+    type: Sequelize.STRING,
+  },
   firstname: {
     type: Sequelize.STRING,
-    allowNull: false,
+    // allowNull: false,
     validate: {
       notEmpty: true,
     },
   },
   lastname: {
     type: Sequelize.STRING,
-    allowNull: false,
+    // allowNull: false,
     validate: {
       notEmpty: true,
     },
   },
   email: {
     type: Sequelize.STRING,
-    allowNull: false,
+    // allowNull: false,
     unique: true,
     validate: {
       isEmail: true,
       notEmpty: true,
     },
-  },
-  password: {
-    type: Sequelize.STRING,
   },
   githubId: {
     type: Sequelize.INTEGER,
