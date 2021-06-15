@@ -1,47 +1,85 @@
-import React from 'react'
-import {connect} from 'react-redux'
-import {Link} from 'react-router-dom'
-import {logout} from '../store'
+import React from 'react';
+import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
+import { logout } from '../store';
 
-const Navbar = ({handleClick, isLoggedIn}) => (
-  <div>
-    <h1>FS-App-Template</h1>
-    <nav>
-      {isLoggedIn ? (
-        <div>
-          {/* The navbar will show these links after you log in */}
-          <Link to="/home">Home</Link>
-          <a href="#" onClick={handleClick}>
-            Logout
-          </a>
-        </div>
-      ) : (
-        <div>
-          {/* The navbar will show these links before you log in */}
-          <Link to="/login">Login</Link>
-          <Link to="/signup">Sign Up</Link>
-        </div>
-      )}
-    </nav>
-    <hr />
-  </div>
-)
+import { AppBar, Toolbar, Typography } from '@material-ui/core';
+
+import { makeStyles } from '@material-ui/core/styles';
+
+const useStyles = makeStyles((theme) => ({
+  header: {
+    position: 'sticky',
+  },
+}));
+
+const Navbar = (props) => {
+  const classes = useStyles(props);
+
+  // <div>
+  //   <h1>FS-App-Template</h1>
+  //   <nav>
+  //     {isLoggedIn ? (
+  //       <div>
+  //         {/* The navbar will show these links after you log in */}
+  //         <Link to="/home">Home</Link>
+  //         <a href="#" onClick={handleClick}>
+  //           Logout
+  //         </a>
+  //       </div>
+  //     ) : (
+  //       <div>
+  //         {/* The navbar will show these links before you log in */}
+  //         <Link to="/login">Login</Link>
+  //         <Link to="/signup">Sign Up</Link>
+  //       </div>
+  //     )}
+  //   </nav>
+  //   <hr />
+  // </div>
+  return (
+    <>
+      <AppBar className={classes.header}>
+        <Toolbar>
+          <Typography variant="h4">Grace Shopper Team 6</Typography>
+          <nav>
+            {props.isLoggedIn ? (
+              <div>
+                {/* The navbar will show these links after you log in */}
+                <Link to="/home">Home</Link>
+                <a href="#" onClick={props.handleClick}>
+                  Logout
+                </a>
+              </div>
+            ) : (
+              <div>
+                {/* The navbar will show these links before you log in */}
+                <Link to="/login">Login</Link>
+                <Link to="/signup">Sign Up</Link>
+              </div>
+            )}
+          </nav>
+        </Toolbar>
+      </AppBar>
+    </>
+  );
+};
 
 /**
  * CONTAINER
  */
-const mapState = state => {
+const mapState = (state) => {
   return {
-    isLoggedIn: !!state.auth.id
-  }
-}
+    isLoggedIn: !!state.auth.id,
+  };
+};
 
-const mapDispatch = dispatch => {
+const mapDispatch = (dispatch) => {
   return {
     handleClick() {
-      dispatch(logout())
-    }
-  }
-}
+      dispatch(logout());
+    },
+  };
+};
 
-export default connect(mapState, mapDispatch)(Navbar)
+export default connect(mapState, mapDispatch)(Navbar);
