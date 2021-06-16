@@ -9,38 +9,43 @@ class Cart extends Component {
     this.handleIncreaseQuantity = this.handleIncreaseQuantity.bind(this);
   }
 
+  componentDidMount() {
+
+    this.props.fetchCard(userId, cardId);
+  }
+
   handleIncreaseQuantity() {}
 
   handleDecreaseQuantity() {}
 
   render() {
-    // let addedCards = this.props.cards.length ? (
-    //   this.props.cards.map((card) => {
-    //     return (
-    //       <div>
-    //         <li key={card.id}>
-    //           <div>
-    //             <img src={card.imgUrl} />
-    //           </div>
-    //           <Link to={`/cards/${card.id}`}>
-    //             <p>{card.name}</p>
-    //           </Link>
-    //           <p>{card.description}</p>
-    //           <p>{card.price}</p>
-    //         </li>
-    //         <div>
-    //           <form>
-    //             <div onClick={this.handleDecreaseQuantity}>-</div>
-    //             <input value="1" />
-    //             <div onClick={this.handleIncreaseQuantity}>+</div>
-    //           </form>
-    //         </div>
-    //       </div>
-    //     );
-    //   })
-    // ) : (
-    //   <p>Nothing</p>
-    // );
+    let addedCards = this.props.cards.length ? (
+      this.props.cards.map((card) => {
+        return (
+          <div>
+            <li key={card.id}>
+              <div>
+                <img src={card.imgUrl} />
+              </div>
+              <Link to={`/cards/${card.id}`}>
+                <p>{card.name}</p>
+              </Link>
+              <p>{card.description}</p>
+              <p>{card.price}</p>
+            </li>
+            <div>
+              <form>
+                <div onClick={this.handleDecreaseQuantity}>-</div>
+                <input value="1" />
+                <div onClick={this.handleIncreaseQuantity}>+</div>
+              </form>
+            </div>
+          </div>
+        );
+      })
+    ) : (
+      <p>Nothing</p>
+    );
 
     return (
       <div>
@@ -56,5 +61,11 @@ const mapState = (state) => {
     cards: state.addedCards,
   };
 };
+
+const mapDispatch = (dispatch) => {
+  return {
+    fetchCart: (userId, cardId) => fetchCart(userId, cardId)
+  }
+}
 
 export default connect(mapState)(Cart);
