@@ -1,15 +1,22 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { fetchCards } from "../store/cards";
+import { addedToCart } from "../store/cart";
 import { Link } from "react-router-dom";
 
 class Cards extends Component {
   constructor(props) {
     super(props);
+
+    this.handleClick = this.handleClick.bind(this);
   }
 
   componentDidMount() {
     this.props.fetchCards();
+  }
+
+  handleClick() {
+    this.props.addedToCart(cardId);
   }
 
   render() {
@@ -23,6 +30,9 @@ class Cards extends Component {
               </h3>
               <img src={card.imageUrl} />
               <h5>{card.price}</h5>
+              <button type="button" onClick={this.handleClick}>
+                Add To Cart
+              </button>
             </div>
           );
         })}
@@ -39,6 +49,7 @@ const mapState = (state) => {
 
 const mapDispatch = (dispatch) => {
   return {
+    addedToCart: (cardId) => dispatch(addedToCart(cardId)),
     fetchCards: () => dispatch(fetchCards()),
   };
 };

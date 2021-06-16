@@ -1,11 +1,12 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { fetchCard } from "../store/card";
+import { addedToCart } from "../store/cart";
 
 class Card extends Component {
   constructor(props) {
     super(props);
-    this.handleClick = this.handleClick.bind(this)
+    this.handleClick = this.handleClick.bind(this);
   }
 
   componentDidMount() {
@@ -14,10 +15,11 @@ class Card extends Component {
   }
 
   handleClick() {
-
+    this.props.addedToCart(cardId);
   }
 
   render() {
+    console.log(this.props);
     const { singleCard } = this.props;
     return (
       <div>
@@ -26,7 +28,9 @@ class Card extends Component {
         <img src={singleCard.imageUrl} />
         <h6>{singleCard.description}</h6>
         <h3>{singleCard.price}</h3>
-        <button type="button" onClick={this.handleClick}>Add To Cart</button>
+        <button type="button" onClick={this.handleClick}>
+          Add To Cart
+        </button>
       </div>
     );
   }
@@ -41,6 +45,7 @@ const mapState = (state) => {
 const mapDispatch = (dispatch) => {
   return {
     fetchCard: (id) => dispatch(fetchCard(id)),
+    addedToCart: (cardId) => dispatch(addedToCart(cardId)),
   };
 };
 
