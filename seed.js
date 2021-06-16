@@ -2,6 +2,8 @@ const { db } = require('./server/db');
 const Cards = require('./server/db/models/Cards');
 const Address = require('./server/db/models/Address');
 const User = require('./server/db/models/user');
+const Orders = require('./server/db/models/order');
+const OrderItems = require('./server/db/models/orderItem');
 
 // test change
 
@@ -113,6 +115,41 @@ const seed = async () => {
         Promise.all(user.map((users) => User.create(users)))
       )
     );
+
+    // create an order for a user
+    // create some order items for that order
+    // const user = await User.findByPk(1);
+    const cart1 = await Orders.create({ isOpen: true, total: 0, userId: 1 });
+    const orderItems = [
+      await OrderItems.create({ quantity: 1, cardId: 1, orderId: 1 }),
+      await OrderItems.create({ quantity: 2, cardId: 2, orderId: 1 }),
+      await OrderItems.create({ quantity: 5, cardId: 3, orderId: 1 }),
+    ];
+
+    const cart2 = await Orders.create({ isOpen: false, total: 0, userId: 1 });
+    const orderItems2 = [
+      await OrderItems.create({ quantity: 6, cardId: 1, orderId: 2 }),
+      await OrderItems.create({ quantity: 3, cardId: 2, orderId: 2 }),
+      await OrderItems.create({ quantity: 9, cardId: 3, orderId: 2 }),
+    ];
+
+    // test cart display:
+    console.log('User 1 with cart:');
+
+    let displayUser = await User.findAll({
+      // raw: true,
+      nest: true,
+      where: { id: 1 },
+      include: {
+        model: Orders,
+        include: { model: OrderItems, include: { model: Cards } },
+      },
+    });
+    // console.log(displayUser[0].dataValues);
+
+    console.log(displayUser[0].dataValues.orders);
+    // console.log(displayUser);
+
     // seed your database here!
   } catch (err) {
     console.log(err);
