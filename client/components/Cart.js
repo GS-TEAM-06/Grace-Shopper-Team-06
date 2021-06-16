@@ -1,20 +1,41 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
-import { Link } from "react-router-dom";
+import React, {Component} from "react";
+import {connect} from "react-redux";
+import {Link} from "react-router-dom";
 
 class Cart extends Component {
+  constructor() {
+    super();
+    this.handleDecreaseQuantity = this.handleDecreaseQuantity.bind(this);
+    this.handleIncreaseQuantity = this.handleIncreaseQuantity.bind(this);
+  }
+
+  handleIncreaseQuantity() {}
+
+  handleDecreaseQuantity() {}
+
   render() {
     // let addedCards = this.props.cards.length ? (
     //   this.props.cards.map((card) => {
     //     return (
-    //       <li key={card.id}>
+    //       <div>
+    //         <li key={card.id}>
+    //           <div>
+    //             <img src={card.imgUrl} />
+    //           </div>
+    //           <Link to={`/cards/${card.id}`}>
+    //             <p>{card.name}</p>
+    //           </Link>
+    //           <p>{card.description}</p>
+    //           <p>{card.price}</p>
+    //         </li>
     //         <div>
-    //           <img src={card.imgUrl} />
+    //           <form>
+    //             <div onClick={this.handleDecreaseQuantity}>-</div>
+    //             <input value="1" />
+    //             <div onClick={this.handleIncreaseQuantity}>+</div>
+    //           </form>
     //         </div>
-    //         <p>{card.name}</p>
-    //         <p>{card.description}</p>
-    //         <p>{card.price}</p>
-    //       </li>
+    //       </div>
     //     );
     //   })
     // ) : (

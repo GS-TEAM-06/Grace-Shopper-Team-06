@@ -5,6 +5,7 @@ import { fetchCard } from "../store/card";
 class Card extends Component {
   constructor(props) {
     super(props);
+    this.handleClick = this.handleClick.bind(this)
   }
 
   componentDidMount() {
@@ -12,15 +13,20 @@ class Card extends Component {
     this.props.fetchCard(id);
   }
 
+  handleClick() {
+
+  }
+
   render() {
     const { singleCard } = this.props;
     return (
       <div>
         <h3>{singleCard.name}</h3>
-        <h3>{singleCard.quantity}</h3>
+        {/* <h3>{singleCard.quantity}</h3> */}
         <img src={singleCard.imageUrl} />
         <h6>{singleCard.description}</h6>
         <h3>{singleCard.price}</h3>
+        <button type="button" onClick={this.handleClick}>Add To Cart</button>
       </div>
     );
   }
