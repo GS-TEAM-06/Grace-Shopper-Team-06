@@ -1,50 +1,56 @@
-import axios from 'axios'
+import { Error } from "@material-ui/icons";
+import axios from "axios";
 
 //action type
-const ADD_TO_CART = "ADD_TO_CART"
-const GET_CART = "GET_CART"
+const ADD_TO_CART = "ADD_TO_CART";
+const GET_CART = "GET_CART";
 
-//action creator 
+//action creator
 const addToCart = (cart) => {
-    return {
-        type:ADD_TO_CART,
-        cart,
-    }
-}
+  return {
+    type: ADD_TO_CART,
+    cart,
+  };
+};
 
-const getCart = () => {
-
-}
+const getCart = (cart) => {
+  return {
+    type: GET_CART,
+    cart,
+  };
+};
 
 //thunk
 export const addedToCart = (userId, cardId) => {
-    return async (dispatch) => {
-        try {
-            const {data} = await axios.post(`/api/users/${userId}/cart`, cardId);
-            dispatch(addToCart(data))
-        } catch (error) {
-            
-        }
+  return async (dispatch) => {
+    try {
+      const { data } = await axios.post(`/api/users/${userId}/order`, cardId);
+      dispatch(addToCart(data));
+    } catch (error) {
+      console.log(error);
     }
-}
+  };
+};
 
-export const fetchCart = (cardId) => {
-    return async (dispatch) => {
-        try {
-            const {data} = await axios.get(`/api/cards/${cardId}`);
-            dispatch(getCart(data));
-          } catch (error) {
-            console.error(error);
-          }
+export const fetchCart = (userId, orderId) => {
+  return async (dispatch) => {
+    try {
+      const { data } = await axios.get(`/api/users/${userId}/order/${orderId}`);
+      dispatch(getCart(data));
+    } catch (error) {
+      console.error(error);
     }
-}
+  };
+};
 
 //reducer
 export default function cartReducer(state = [], action) {
-    switch (action.type) {
-        case ADD_TO_CART:
-            return [...state, action.cart];
-        default:
-            return state;
-    }
+  switch (action.type) {
+    case ADD_TO_CART:
+      return [...state, action.cart];
+    case GET_CART:
+      return action.cart;
+    default:
+      return state;
+  }
 }
