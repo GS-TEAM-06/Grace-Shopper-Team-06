@@ -33,6 +33,7 @@ class Routes extends Component {
               path="/cart"
               render={(props) => <Cart {...props} userId={this.props.userId} />}
             />
+            <Route path="/cards/:id" component={Card} />
             <Redirect to="/" />
           </Switch>
         ) : (

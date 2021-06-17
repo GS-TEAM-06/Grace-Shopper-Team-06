@@ -1,3 +1,4 @@
+import { CardContent } from "@material-ui/core";
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
@@ -21,39 +22,41 @@ class Cart extends Component {
   handleDecreaseQuantity() {}
 
   render() {
-    console.log("cartUserId->", this.props.userId);
-    // let addedCards = this.props.cards.length ? (
-    //   this.props.cards.map((card) => {
-    //     return (
-    //       <div>
-    //         <li key={card.id}>
-    //           <div>
-    //             <img src={card.imgUrl} />
-    //           </div>
-    //           <Link to={`/cards/${card.id}`}>
-    //             <p>{card.name}</p>
-    //           </Link>
-    //           <p>{card.description}</p>
-    //           <p>{card.price}</p>
-    //         </li>
-    //         <div>
-    //           <form>
-    //             <div onClick={this.handleDecreaseQuantity}>-</div>
-    //             <input value="1" />
-    //             <div onClick={this.handleIncreaseQuantity}>+</div>
-    //           </form>
-    //         </div>
-    //       </div>
-    //     );
-    //   })
-    // ) : (
-    //   <p>Nothing</p>
-    // );
+    const { orderItems } = this.props.cart;
+    const hasOrderItems = orderItems && orderItems.length;
+    console.log("order items?->", orderItems);
+    let items = hasOrderItems ? (
+      orderItems.map((objectItem) => {
+        return (
+          <div key={objectItem.card.id}>
+            <li>
+              <div>
+                <img src={objectItem.card.imgUrl} />
+              </div>
+              <Link to={`/cards/${objectItem.card.id}`}>
+                <p>{objectItem.card.name}</p>
+              </Link>
+              <p>{objectItem.card.description}</p>
+              <p>{objectItem.card.price}</p>
+            </li>
+            {/* <div>
+              <form>
+                <div onClick={this.handleDecreaseQuantity}>-</div>
+                <input value="1" />
+                <div onClick={this.handleIncreaseQuantity}>+</div>
+              </form>
+            </div> */}
+          </div>
+        );
+      })
+    ) : (
+      <p>Nothing</p>
+    );
 
     return (
       <div>
         <h5>You have ordered:</h5>
-        <ul></ul>
+        <ul>{items}</ul>
       </div>
     );
   }
@@ -61,7 +64,7 @@ class Cart extends Component {
 
 const mapState = (state) => {
   return {
-    cards: state.addedCards,
+    cart: state.cart,
   };
 };
 

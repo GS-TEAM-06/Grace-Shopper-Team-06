@@ -43,10 +43,10 @@ export const fetchCart = (userId) => {
 };
 
 //reducer
-export default function cartReducer(state = [], action) {
+export default function cartReducer(state = {}, action) {
   switch (action.type) {
     case ADD_TO_CART:
-      return [...state, action.cart];
+      return action.cart;
     case GET_CART:
       return action.cart;
     default:
