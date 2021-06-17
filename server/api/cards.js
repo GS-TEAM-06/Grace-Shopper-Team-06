@@ -2,6 +2,7 @@ const router = require('express').Router();
 const {
   models: { Cards },
 } = require('../db');
+const { isAuthenticated, isSameUser, isAdmin } = require('../authMiddleware');
 
 /////// all routes mounted on /api/cards
 
@@ -16,7 +17,7 @@ router.get('/', async (req, res, next) => {
 });
 
 // POST /api/cards
-router.post('/', async (req, res, next) => {
+router.post('/', isAuthenticated, isAdmin, async (req, res, next) => {
   // console.log(req.body);
   try {
     const result = await Cards.create({
@@ -44,7 +45,7 @@ router.get('/:id', async (req, res, next) => {
 });
 
 // PUT /api/cards/:id
-router.put('/:id', async (req, res, next) => {
+router.put('/:id', isAuthenticated, isAdmin, async (req, res, next) => {
   // update a card
   try {
     let card = await Cards.findByPk(req.params.id);
@@ -63,7 +64,7 @@ router.put('/:id', async (req, res, next) => {
 });
 
 // DELETE /api/cards/:id
-router.delete('/:id', async (req, res, next) => {
+router.delete('/:id', isAuthenticated, isAdmin, async (req, res, next) => {
   try {
     const result = await Cards.destroy({ where: { id: req.params.id } });
     if (result === 0) {
