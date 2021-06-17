@@ -10,7 +10,8 @@ class Cart extends Component {
   }
 
   componentDidMount() {
-    this.props.fetchCart(cardId);
+    //need to get userId
+    this.props.fetchCart(userId);
   }
 
   handleIncreaseQuantity() {}
@@ -63,7 +64,7 @@ const mapState = (state) => {
 
 const mapDispatch = (dispatch) => {
   return {
-    fetchCart: (orderId) => fetchCart(orderId),
+    fetchCart: (userId) => dispatch(fetchCart(userId)),
   };
 };
 

@@ -1,4 +1,3 @@
-import { Error } from "@material-ui/icons";
 import axios from "axios";
 
 //action type
@@ -24,7 +23,7 @@ const getCart = (cart) => {
 export const addedToCart = (userId, cardId) => {
   return async (dispatch) => {
     try {
-      const { data } = await axios.post(`/api/users/${userId}/order`, cardId);
+      const { data } = await axios.put(`/api/users/${userId}/order`, cardId);
       dispatch(addToCart(data));
     } catch (error) {
       console.log(error);
@@ -32,10 +31,10 @@ export const addedToCart = (userId, cardId) => {
   };
 };
 
-export const fetchCart = (userId, orderId) => {
+export const fetchCart = (userId) => {
   return async (dispatch) => {
     try {
-      const { data } = await axios.get(`/api/users/${userId}/order/${orderId}`);
+      const { data } = await axios.get(`/api/users/${userId}/order`);
       dispatch(getCart(data));
     } catch (error) {
       console.error(error);
