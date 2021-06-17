@@ -5,12 +5,12 @@ const {
 
 // GET ROUTE /orders/orderId
 
-router.get("/:id", async (req, res, next) => {
+router.get("/:orderId", async (req, res, next) => {
   try {
     const cart = (
       await Orders.findOne({
         include: [{ model: OrderItems, include: [Cards] }],
-        where: { id: req.params.id },
+        where: { id: req.params.orderId },
       })
     ).get({ plain: true });
     res.json(order);
