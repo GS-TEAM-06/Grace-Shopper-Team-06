@@ -106,11 +106,7 @@ router.get(
 );
 
 //ADD ITEM TO CART
-<<<<<<< HEAD
 router.post('/', isAuthenticated, isSameUser, async (req, res, next) => {
-=======
-router.post("/:userId/cart", async (req, res, next) => {
->>>>>>> d8b392612858fd40d75f6dd4e90f8d0f3c021447
   try {
     const singleItem = await OrderIems.create(req.body);
     res.json(singleItem);
