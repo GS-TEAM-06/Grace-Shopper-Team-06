@@ -21,8 +21,8 @@ class Cart extends Component {
   handleDecreaseQuantity() {}
 
   render() {
-    console.log("cartUserId->", this.props.userId);
-    // let addedCards = this.props.cards.length ? (
+    console.log("order items?->", this.props.cart);
+    // let orderItems = this.props.cart.orderItems.length ? (
     //   this.props.cards.map((card) => {
     //     return (
     //       <div>
@@ -61,7 +61,7 @@ class Cart extends Component {
 
 const mapState = (state) => {
   return {
-    cards: state.addedCards,
+    cart: state.cart,
   };
 };
 
