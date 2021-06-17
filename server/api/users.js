@@ -69,7 +69,7 @@ router.get("/:userId/cart", async (req, res, next) => {
 });
 
 //ADD ITEM TO CART
-router.post("/", async (req, res, next) => {
+router.post("/:userId/cart", async (req, res, next) => {
   try {
     const singleItem = await OrderIems.create(req.body);
     res.json(singleItem);
