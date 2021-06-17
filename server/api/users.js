@@ -1,19 +1,19 @@
-const router = require("express").Router();
+const router = require('express').Router();
 const {
   models: { User },
-} = require("../db");
-const Orders = require("../db/models/order");
-const Cards = require("../db/models/Cards");
-const OrderItems = require("../db/models/orderItem");
+} = require('../db');
+const Orders = require('../db/models/order');
+const Cards = require('../db/models/Cards');
+const OrderItems = require('../db/models/orderItem');
 
 // get /api/users/ => return all users
-router.get("/", async (req, res, next) => {
+router.get('/', async (req, res, next) => {
   try {
     const users = await User.findAll({
       // explicitly select only the id and username fields - even though
       // users' passwords are encrypted, it won't help if we just
       // send everything to anyone who asks!
-      attributes: ["id", "username"],
+      attributes: ['id', 'username'],
     });
     res.json(users);
   } catch (err) {
@@ -22,54 +22,68 @@ router.get("/", async (req, res, next) => {
 });
 
 // get /api/users/:id => returns an individual user
-router.get("/:userId", async (req, res, next) => {
+router.get('/:userId', async (req, res, next) => {
   try {
-    const user = (await User.findByPk(req.params.userId)).get({ plain: true });
+    const user = await User.findByPk(req.params.userId);
+    if (user === null) {
+      const error = new Error('Not found!');
+      error.status = 404;
+      throw error;
+    }
+
     delete user.password;
-    res.json(user);
+    res.json(user.get({ plain: true }));
   } catch (err) {
     next(err);
   }
 });
 
 // get /api/users/:id/orders => returns an individual user's past orders
-router.get("/:userId/orders", async (req, res, next) => {
+router.get('/:userId/orders', async (req, res, next) => {
   try {
-    const orders = (
-      await User.findByPk(req.params.userId, {
-        nested: true,
-        include: [
-          {
-            model: Orders,
-            where: { isOpen: false },
-            include: [{ model: OrderItems, include: [Cards] }],
-          },
-        ],
-        where: { userId: req.params.userId },
-      })
-    ).get({ plain: true });
-    res.json(orders);
+    const orders = await User.findByPk(req.params.userId, {
+      nested: true,
+      include: [
+        {
+          model: Orders,
+          where: { isOpen: false },
+          include: [{ model: OrderItems, include: [Cards] }],
+        },
+      ],
+      where: { userId: req.params.userId },
+    });
+    if (orders === null) {
+      const error = new Error('Not found!');
+      error.status = 404;
+      throw error;
+    }
+
+    res.json(orders.get({ plain: true }));
   } catch (err) {
     next(err);
   }
 });
 
-router.get("/:userId/cart", async (req, res, next) => {
+router.get('/:userId/cart', async (req, res, next) => {
   try {
-    const cart = (
-      await Orders.findOne({
-        include: [{ model: OrderItems, include: [Cards] }],
-        where: { userId: req.params.userId, isOpen: true },
-      })
-    ).get({ plain: true });
-    res.json(cart);
+    const cart = await Orders.findOne({
+      include: [{ model: OrderItems, include: [Cards] }],
+      where: { userId: req.params.userId, isOpen: true },
+    });
+    if (cart === null) {
+      const error = new Error('Not found!');
+      error.status = 404;
+      throw error;
+    }
+
+    res.json(cart.get({ plain: true }));
   } catch (err) {
     next(err);
   }
 });
 
 //ADD ITEM TO CART
-router.post("/", async (req, res, next) => {
+router.post('/', async (req, res, next) => {
   try {
     const singleItem = await OrderIems.create(req.body);
     res.json(singleItem);
@@ -79,22 +93,27 @@ router.post("/", async (req, res, next) => {
 });
 
 //UPDATE ITEM IN CART
-router.put("/:userId/cart", async (req, res, next) => {
+router.put('/:userId/cart', async (req, res, next) => {
   try {
-    const cart = (
-      await Orders.findOne({
-        include: [{ model: OrderItems, include: [Cards] }],
-        where: { userId: userId, isOpen: true },
-      })
-    ).get({ plain: true });
-    res.json(await cart.update(req.body));
+    let cart = await Orders.findOne({
+      include: [{ model: OrderItems, include: [Cards] }],
+      where: { userId: req.params.userId, isOpen: true },
+    });
+    if (cart === null) {
+      const error = new Error('Not found!');
+      error.status = 404;
+      throw error;
+    }
+
+    cart = await cart.update(req.body);
+    res.json(cart.get({ plain: true }));
   } catch (error) {
     next(error);
   }
 });
 
 //DELETE ITEM IN CART
-router.delete("/:userId/cart", async (req, res, next) => {
+router.delete('/:userId/cart', async (req, res, next) => {
   try {
     const cart = (
       await Orders.findOne({
