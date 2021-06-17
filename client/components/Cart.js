@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
+import { fetchCart } from "../store/cart";
 
 class Cart extends Component {
   constructor() {
@@ -11,6 +12,7 @@ class Cart extends Component {
 
   componentDidMount() {
     //need to get userId
+    let userId = this.props.userId;
     this.props.fetchCart(userId);
   }
 
@@ -19,6 +21,7 @@ class Cart extends Component {
   handleDecreaseQuantity() {}
 
   render() {
+    console.log("cartUserId->", this.props.userId);
     // let addedCards = this.props.cards.length ? (
     //   this.props.cards.map((card) => {
     //     return (
