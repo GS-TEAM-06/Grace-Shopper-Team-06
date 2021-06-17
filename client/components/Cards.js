@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import { fetchCards } from "../store/cards";
 import { addedToCart } from "../store/cart";
 import { Link } from "react-router-dom";
+import Home from "./Home";
 
 class Cards extends Component {
   constructor(props) {
@@ -22,6 +23,17 @@ class Cards extends Component {
   render() {
     return (
       <div>
+          <div>
+              {this.props.isLoggedIn ? (
+                  <div>
+                  <Home />
+                  </div>
+              ) : (
+                  <div>
+                     <h3>Welcome, Guest</h3> 
+                  </div>
+              )}
+          </div>
         {this.props.cards.map((card) => {
           return (
             <div key={card.id}>

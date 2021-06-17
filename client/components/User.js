@@ -8,7 +8,7 @@ class User extends Component {
     }
   
     componentDidMount() {
-      const { id } = this.props.match.params;
+      const id = this.props.userId;
       this.props.fetchUser(id);
     }
 

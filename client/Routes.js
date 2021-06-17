@@ -4,9 +4,10 @@ import { withRouter, Route, Switch, Redirect } from "react-router-dom";
 import { Login, Signup } from "./components/AuthForm";
 import Home from "./components/Home";
 import { me } from "./store";
-import Cards from "../client/components/Cards";
-import Card from "../client/components/Card";
-import Cart from "../client/components/Cart";
+import Cards from "./components/Cards";
+import Card from "./components/Card";
+import Cart from "./components/Cart";
+import User from "./components/User";
 
 /**
  * COMPONENT
@@ -23,8 +24,10 @@ class Routes extends Component {
       <div>
         {isLoggedIn ? (
           <Switch>
-            <Route path="/home" component={Home} />
-            <Redirect to="/home" />
+            <Route exact path="/" component={Cards} />
+            <Route path="/user" render={(props) => (<User {...props} userId={this.props.userId} />)} />
+            <Route path="/cart" render={(props) => (<Cart {...props} userId={this.props.userId} />)} />
+            <Redirect to="/" />
           </Switch>
         ) : (
           <Switch>
@@ -44,10 +47,12 @@ class Routes extends Component {
  * CONTAINER
  */
 const mapState = (state) => {
+  console.log("what is this?? ", state)
   return {
     // Being 'logged in' for our purposes will be defined has having a state.auth that has a truthy id.
     // Otherwise, state.auth will be an empty object, and state.auth.id will be falsey
     isLoggedIn: !!state.auth.id,
+    userId: state.auth.id,
   };
 };
 
