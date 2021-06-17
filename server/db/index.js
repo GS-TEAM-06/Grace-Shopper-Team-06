@@ -7,7 +7,7 @@ const User = require('./models/user');
 const Orders = require('./models/order');
 const OrderItems = require('./models/orderItem');
 
-//associations could go here!
+//associations go here!
 
 User.hasMany(Address);
 Address.belongsTo(User);

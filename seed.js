@@ -134,20 +134,35 @@ const seed = async () => {
     ];
 
     // test cart display:
-    console.log('User 1 with cart:');
+    console.log('An open cart with items:');
 
-    let displayUser = await User.findAll({
-      // raw: true,
-      nest: true,
-      where: { id: 1 },
-      include: {
-        model: Orders,
-        include: { model: OrderItems, include: { model: Cards } },
-      },
-    });
+    // let displayUser = await User.findAll({
+    //   raw: true,
+    //   nest: true,
+    //   where: { id: 1 },
+    //   include: {
+    //     model: Orders,
+    //     include: { model: OrderItems, include: { model: Cards } },
+    //   },
+    // });
+
+    // displayUser = await User.findByPk(1, { raw: true });
+    // // console.log(displayUser);
+    // let cart = (await Orders.findByPk(1, { include: OrderItems })).dataValues;
+    let cart = (
+      await Orders.findOne({
+        include: [{ model: OrderItems, include: [Cards] }],
+        where: { isOpen: true },
+      })
+    ).get({ plain: true });
+    console.log(cart);
+
+    // let userWithOrders = await User.findByPk(userId);
+    console.log('First card in first order:', cart.orderItems[0].card);
+
     // console.log(displayUser[0].dataValues);
 
-    console.log(displayUser[0].dataValues.orders);
+    // console.log(displayUser[0]);
     // console.log(displayUser);
 
     // seed your database here!
