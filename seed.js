@@ -123,14 +123,14 @@ const seed = async () => {
     const orderItems = [
       await OrderItems.create({ quantity: 1, cardId: 1, orderId: 1 }),
       await OrderItems.create({ quantity: 2, cardId: 2, orderId: 1 }),
-      // await OrderItems.create({ quantity: 5, cardId: 3, orderId: 1 }),
+      await OrderItems.create({ quantity: 5, cardId: 3, orderId: 1 }),
     ];
 
     const cart2 = await Orders.create({ isOpen: false, total: 0, userId: 1 });
     const orderItems2 = [
       await OrderItems.create({ quantity: 6, cardId: 1, orderId: 2 }),
       await OrderItems.create({ quantity: 3, cardId: 2, orderId: 2 }),
-      // await OrderItems.create({ quantity: 9, cardId: 3, orderId: 2 }),
+      await OrderItems.create({ quantity: 9, cardId: 3, orderId: 2 }),
     ];
 
     // test cart display:

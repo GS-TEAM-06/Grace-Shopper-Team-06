@@ -3,6 +3,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import { fetchCart } from "../store/cart";
+import { removedFromCart } from "../store/cart";
 
 class Cart extends Component {
   constructor() {
@@ -71,6 +72,7 @@ const mapState = (state) => {
 const mapDispatch = (dispatch) => {
   return {
     fetchCart: (userId) => dispatch(fetchCart(userId)),
+    removedFromCart: (userId, cardId) => dispatch(removedFromCart(userId, cardId)),
   };
 };
 
