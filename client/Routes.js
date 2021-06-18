@@ -24,7 +24,7 @@ class Routes extends Component {
       <div>
         {isLoggedIn ? (
           <Switch>
-            <Route exact path="/" component={Cards} />
+            <Route exact path="/" render={(props) => <Cards {...props} isLoggedIn={this.props.isLoggedIn} />} />
             <Route
               path="/user"
               render={(props) => <User {...props} userId={this.props.userId} />}

@@ -1,8 +1,9 @@
-import axios from 'axios';
+import axios from "axios";
 
 //action type
-const ADD_TO_CART = 'ADD_TO_CART';
-const GET_CART = 'GET_CART';
+const ADD_TO_CART = "ADD_TO_CART";
+const GET_CART = "GET_CART";
+const REMOVE_FROM_CART = "REMOVE_FROM_CART";
 
 //action creator
 const addToCart = (cart) => {
@@ -19,17 +20,24 @@ const getCart = (cart) => {
   };
 };
 
+const removeFromCart = (cart) => {
+  return {
+    type: REMOVE_FROM_CART,
+    cart,
+  };
+};
+
 //thunk
 export const addedToCart = (userId, cardId) => {
   return async (dispatch) => {
     try {
-      const { data } = await axios.put(
+      const {data} = await axios.put(
         `/api/users/${userId}/cart`,
         {
           cardId: cardId,
         },
         {
-          headers: { token: window.localStorage.token },
+          headers: {token: window.localStorage.token},
         }
       );
       dispatch(addToCart(data));
@@ -42,12 +50,24 @@ export const addedToCart = (userId, cardId) => {
 export const fetchCart = (userId) => {
   return async (dispatch) => {
     try {
-      const { data } = await axios.get(`/api/users/${userId}/cart`, {
-        headers: { token: window.localStorage.token },
+      const {data} = await axios.get(`/api/users/${userId}/cart`, {
+        headers: {token: window.localStorage.token},
       });
       dispatch(getCart(data));
     } catch (error) {
       console.error(error);
+    }
+  };
+};
+
+export const removedFromCart = (userId, cardId) => {
+  return async (dispatch) => {
+    try {
+      const {data} = await axios.delete(
+        `/api/users/${userId}/cart`, {data: {cardId}, headers: {token: window.localStorage.token}});
+      dispatch(removeFromCart(data));
+    } catch (error) {
+      console.log(error);
     }
   };
 };
@@ -58,6 +78,8 @@ export default function cartReducer(state = {}, action) {
     case ADD_TO_CART:
       return action.cart;
     case GET_CART:
+      return action.cart;
+    case REMOVE_FROM_CART:
       return action.cart;
     default:
       return state;
