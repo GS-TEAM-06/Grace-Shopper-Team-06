@@ -128,7 +128,6 @@ router.put(
         where: { userId: req.params.userId, isOpen: true },
       });
 
-      console.log(cart);
       // get a plain object for the cart instance dataValues
       let plainCart = cart.get({ plain: true });
 
@@ -151,21 +150,27 @@ router.put(
 
       // walk through the orderItems in this cart
       // if the card is already in the card, increment it's quantity
-      let orderItem;
-      let updated = false;
+      let orderItem = false;
       for (let i = 0; i < plainCart.orderItems.length; i++) {
-        orderItem = await OrderItems.findByPk(plainCart.orderItems[i].id);
+        if (
+          Number(plainCart.orderItems[i].cardId) === Number(req.body.cardId)
+        ) {
+          orderItem = await OrderItems.update(
+            { quantity: plainCart.orderItems[i].quantity + 1 },
+            { where: { cardId: plainCart.orderItems[i].cardId } }
+          );
 
-        if (Number(orderItem.dataValues.cardId) === Number(req.body.cardId)) {
-          orderItem = await orderItem.update({
-            quantity: plainCart.orderItems[i].quantity + 1,
-          });
-          updated = true;
+          // if for some reason we didn't update anything, throw a 500 error
+          if (orderItem[0] === 0) {
+            const error = new Error("Couldn't update quantity!");
+            error.status = 500;
+            throw error;
+          }
         }
       }
 
       // if we get here with updated === false, we didn't have the card in the cart already
-      if (updated === false) {
+      if (orderItem === false) {
         // create new OrderItem with cardId = req.body.cardId
         orderItem = await OrderItems.create({
           quantity: 1,
@@ -180,7 +185,7 @@ router.put(
         where: { userId: req.params.userId, isOpen: true },
       });
 
-      // send it back, in JSON.stringify format!
+      // send it back, in JSON.stringify format! (this is very confusing that sequelize magically does this)
       res.json(cart);
     } catch (error) {
       next(error);
