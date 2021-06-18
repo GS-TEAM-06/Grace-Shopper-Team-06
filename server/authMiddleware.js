@@ -2,7 +2,8 @@ const jwt = require('jsonwebtoken');
 const User = require('./db/models/user');
 
 const isAuthenticated = async (req, res, next) => {
-  const token = req.headers['authorization'];
+  console.log(req.headers);
+  const token = req.headers['token'];
 
   // console.log('req.headers:', authHeader);
   if (token == null) {

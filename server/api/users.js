@@ -133,13 +133,35 @@ router.put(
         where: { userId: req.params.userId, isOpen: true },
       });
       if (cart === null) {
-        const error = new Error('Not found!');
+        const error = new Error('Cart not found!');
+        error.status = 404;
+        throw error;
+      }
+      cart = cart.get({ plain: true });
+      const card = await Cards.findByPk(req.body.cardId);
+      if (card === null) {
+        const error = new Error('Card not found!');
         error.status = 404;
         throw error;
       }
 
-      cart = await cart.update(req.body);
-      res.json(cart.get({ plain: true }));
+      for (let i = 0; i < cart.orderItems.length; i++) {
+        if (cart.orderItems[i].cardId === req.body.cardId) {
+          // we already have this card in the cart, increqment quantity and price
+          cart.orderItems[i].quantity++;
+          cart.save();
+        } else {
+          // create new OrderItem with cardId = req.body.cardId
+          const orderItem = await OrderItems.create({
+            quantity: 1,
+            cardId: req.body.cardId,
+            orderId: cart.id,
+          });
+          cart.orderItems.push(orderItem);
+        }
+      }
+
+      res.json(cart);
     } catch (error) {
       next(error);
     }

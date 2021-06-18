@@ -1,7 +1,7 @@
-import axios from "axios";
+import axios from 'axios';
 
 //action type
-const GET_USER = "GET_USER";
+const GET_USER = 'GET_USER';
 
 // action creator
 const getUser = (user) => {
@@ -15,7 +15,9 @@ const getUser = (user) => {
 export const fetchUser = (userId) => {
   return async (dispatch) => {
     try {
-      const {data} = await axios.get(`/api/users/${userId}`);
+      const { data } = await axios.get(`/api/users/${userId}`, {
+        headers: { token: window.localStorage.token },
+      });
       dispatch(getUser(data));
     } catch (error) {
       console.error(error);
