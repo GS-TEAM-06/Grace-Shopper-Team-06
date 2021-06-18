@@ -122,45 +122,70 @@ router.put(
   isSameUser,
   async (req, res, next) => {
     try {
-      if (req.user.id != req.params.userId) {
-        const error = new Error('Unauthorized!');
-        error.status = 401;
-        throw error;
-      }
+      console.log('>>>>>>>>>');
+      console.log('userId: ', req.params.userId, ' cardId: ', req.body.cardId);
+      // if (req.user.id != req.params.userId) {
+      //   const error = new Error('Unauthorized!');
+      //   error.status = 401;
+      //   throw error;
+      // }
 
       let cart = await Orders.findOne({
         include: [{ model: OrderItems, include: [Cards] }],
         where: { userId: req.params.userId, isOpen: true },
       });
+      let plainCart = cart.get({ plain: true });
       if (cart === null) {
         const error = new Error('Cart not found!');
         error.status = 404;
         throw error;
       }
-      cart = cart.get({ plain: true });
+      // cart = await cart.get({ plain: true });
       const card = await Cards.findByPk(req.body.cardId);
       if (card === null) {
         const error = new Error('Card not found!');
         error.status = 404;
         throw error;
       }
-
-      for (let i = 0; i < cart.orderItems.length; i++) {
-        if (cart.orderItems[i].cardId === req.body.cardId) {
+      console.log('>>>>>>>> cart');
+      console.log(plainCart);
+      // console.log(
+      //   'plainCart.orderItems[0].cardId',
+      //   plainCart.orderItems[0].cardId
+      // );
+      let orderItem;
+      let updated = false;
+      for (let i = 0; i < plainCart.orderItems.length; i++) {
+        console.log('HERE');
+        orderItem = await OrderItems.findByPk(plainCart.orderItems[i].id);
+        console.log(orderItem);
+        console.log(
+          'orderItem.dataValues.cardId:',
+          orderItem.dataValues.cardId
+        );
+        if (Number(orderItem.dataValues.cardId) === Number(req.body.cardId)) {
           // we already have this card in the cart, increqment quantity and price
-          cart.orderItems[i].quantity++;
-          cart.save();
-        } else {
-          // create new OrderItem with cardId = req.body.cardId
-          const orderItem = await OrderItems.create({
-            quantity: 1,
-            cardId: req.body.cardId,
-            orderId: cart.id,
+          console.log('WE ARE INCREASING QUANTITY');
+          orderItem = await orderItem.update({
+            quantity: plainCart.orderItems[i].quantity + 1,
           });
-          cart.orderItems.push(orderItem);
+          updated = true;
+        } else {
         }
       }
-
+      if (updated === false) {
+        // create new OrderItem with cardId = req.body.cardId
+        orderItem = await OrderItems.create({
+          quantity: 1,
+          cardId: req.body.cardId,
+          orderId: plainCart.id,
+        });
+      }
+      // cart.orderItems.push(orderItem);
+      cart = await Orders.findOne({
+        include: [{ model: OrderItems, include: [Cards] }],
+        where: { userId: req.params.userId, isOpen: true },
+      });
       res.json(cart);
     } catch (error) {
       next(error);
