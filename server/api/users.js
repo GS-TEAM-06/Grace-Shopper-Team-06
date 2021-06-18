@@ -122,57 +122,49 @@ router.put(
   isSameUser,
   async (req, res, next) => {
     try {
-      console.log('>>>>>>>>>');
-      console.log('userId: ', req.params.userId, ' cardId: ', req.body.cardId);
-      // if (req.user.id != req.params.userId) {
-      //   const error = new Error('Unauthorized!');
-      //   error.status = 401;
-      //   throw error;
-      // }
-
+      // find the cart instance that matches this user's id
       let cart = await Orders.findOne({
         include: [{ model: OrderItems, include: [Cards] }],
         where: { userId: req.params.userId, isOpen: true },
       });
+
+      console.log(cart);
+      // get a plain object for the cart instance dataValues
       let plainCart = cart.get({ plain: true });
+
+      // check to make sure we found a cart
       if (cart === null) {
         const error = new Error('Cart not found!');
         error.status = 404;
         throw error;
       }
-      // cart = await cart.get({ plain: true });
+
+      // get the card instance that matches cardId
       const card = await Cards.findByPk(req.body.cardId);
+
+      // check to make sure we found the card
       if (card === null) {
         const error = new Error('Card not found!');
         error.status = 404;
         throw error;
       }
-      console.log('>>>>>>>> cart');
-      console.log(plainCart);
-      // console.log(
-      //   'plainCart.orderItems[0].cardId',
-      //   plainCart.orderItems[0].cardId
-      // );
+
+      // walk through the orderItems in this cart
+      // if the card is already in the card, increment it's quantity
       let orderItem;
       let updated = false;
       for (let i = 0; i < plainCart.orderItems.length; i++) {
-        console.log('HERE');
         orderItem = await OrderItems.findByPk(plainCart.orderItems[i].id);
-        console.log(orderItem);
-        console.log(
-          'orderItem.dataValues.cardId:',
-          orderItem.dataValues.cardId
-        );
+
         if (Number(orderItem.dataValues.cardId) === Number(req.body.cardId)) {
-          // we already have this card in the cart, increqment quantity and price
-          console.log('WE ARE INCREASING QUANTITY');
           orderItem = await orderItem.update({
             quantity: plainCart.orderItems[i].quantity + 1,
           });
           updated = true;
-        } else {
         }
       }
+
+      // if we get here with updated === false, we didn't have the card in the cart already
       if (updated === false) {
         // create new OrderItem with cardId = req.body.cardId
         orderItem = await OrderItems.create({
@@ -181,11 +173,14 @@ router.put(
           orderId: plainCart.id,
         });
       }
-      // cart.orderItems.push(orderItem);
+
+      // get a fresh instance of the cart
       cart = await Orders.findOne({
         include: [{ model: OrderItems, include: [Cards] }],
         where: { userId: req.params.userId, isOpen: true },
       });
+
+      // send it back, in JSON.stringify format!
       res.json(cart);
     } catch (error) {
       next(error);
