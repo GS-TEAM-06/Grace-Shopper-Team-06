@@ -149,7 +149,7 @@ router.put(
       }
 
       // walk through the orderItems in this cart
-      // if the card is already in the card, increment it's quantity
+      // if the card is already in the cart, increment it's quantity
       let orderItem = false;
       for (let i = 0; i < plainCart.orderItems.length; i++) {
         if (
