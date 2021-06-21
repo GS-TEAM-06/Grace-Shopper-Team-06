@@ -8,6 +8,8 @@ import Cards from "./components/Cards";
 import Card from "./components/Card";
 import Cart from "./components/Cart";
 import User from "./components/User";
+import GuestCart from "./components/GuestCart";
+import {createGuestCart} from "./GuestCart";
 
 /**
  * COMPONENT
@@ -17,9 +19,14 @@ class Routes extends Component {
     this.props.loadInitialData();
   }
 
+
   render() {
     const { isLoggedIn } = this.props;
     console.log("Route-->", this.props);
+
+    // create guestCart in local storage when opening browser
+    createGuestCart()
+
     return (
       <div>
         {isLoggedIn ? (
@@ -42,7 +49,7 @@ class Routes extends Component {
             <Route path="/cards/:id" component={Card} />
             <Route path="/login" component={Login} />
             <Route path="/signup" component={Signup} />
-            <Route path="/cart" component={Cart} />
+            <Route path="/cart" component={GuestCart} />
           </Switch>
         )}
       </div>
