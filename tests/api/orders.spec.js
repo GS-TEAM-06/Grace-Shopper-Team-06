@@ -26,6 +26,7 @@ describe('Order routes', async () => {
     it('GET /api/orders', async () => {
       // should fail, not authenticated as admin
       let res = await request(app).get('/api/users').expect(401);
+      expect(res.body).to.deep.equal({});
 
       res = await request(app).get('/api/users').set({ token }).expect(200);
 
@@ -33,9 +34,6 @@ describe('Order routes', async () => {
       expect(res.body.length).to.equal(6);
     });
 
-    xit('DELETE cart clears the cart and creates a new one', () => {
-      expect(false).to.equal(true);
-    });
     xit('adding a new order item adds it to the cart with its price', () => {
       expect(false).to.equal(true);
     });
