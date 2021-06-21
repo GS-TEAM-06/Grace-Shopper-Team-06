@@ -8,8 +8,8 @@ const Orders = db.define('orders', {
     defaultValue: true,
   },
   total: {
-    type: Sequelize.FLOAT,
-    allowNull: false,
+    type: Sequelize.INTEGER,
+    defaultValue: 0,
   },
 });
 

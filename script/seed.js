@@ -177,9 +177,9 @@ const seed = async () => {
 
     // seed your database here!
 
-    console.log('>>>>>>>>>>>> Closing carts:');
-    carts[0] = await carts[0].update({ isOpen: false });
-    carts[1] = await carts[1].update({ isOpen: false });
+    // console.log('>>>>>>>>>>>> Closing carts:');
+    // carts[0] = await carts[0].update({ isOpen: false });
+    // carts[1] = await carts[1].update({ isOpen: false });
     // carts[0].isOpen = false;
     // carts[1].isOpen = false;
     // await cards[0].save();
