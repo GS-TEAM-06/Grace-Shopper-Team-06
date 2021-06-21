@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken');
 const User = require('./db/models/user');
 
 const isAuthenticated = async (req, res, next) => {
-  console.log(req.headers);
+  // console.log(req.headers);
   const token = req.headers['token'];
 
   // console.log('req.headers:', authHeader);
@@ -10,7 +10,11 @@ const isAuthenticated = async (req, res, next) => {
     return res.sendStatus(401);
   }
   try {
-    const user = (await User.findByToken(token)).get({ plain: true });
+    let user = await User.findByToken(token);
+    if (!user) {
+      throw new Error('Unauthorized!');
+    }
+    user = user.get({ plain: true });
     delete user.password;
     req.user = user;
     next();
@@ -20,7 +24,7 @@ const isAuthenticated = async (req, res, next) => {
 };
 
 const isSameUser = (req, res, next) => {
-  if (req.user.id != req.params.userId) {
+  if (!req.user.admin && req.user.id != req.params.userId) {
     const error = new Error('Unauthorized!');
     error.status = 401;
     next(error);

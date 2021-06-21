@@ -8,7 +8,7 @@ const OrderItems = require('../db/models/orderItem');
 const { isAuthenticated, isSameUser, isAdmin } = require('../authMiddleware');
 
 // get /api/users/ => return all users
-router.get('/', async (req, res, next) => {
+router.get('/', isAuthenticated, isAdmin, async (req, res, next) => {
   try {
     const users = await User.findAll({
       // explicitly select only the id and username fields - even though
