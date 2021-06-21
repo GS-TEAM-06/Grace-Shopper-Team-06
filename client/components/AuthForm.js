@@ -19,32 +19,35 @@ const AuthForm = (props) => {
         </div>
 
         <div>
-          <label htmlFor="firstname">
-            <small>First name</small>
-          </label>
-          <input name="firstname" type="text" />
-        </div>
-
-        <div>
-          <label htmlFor="lastname">
-            <small>Last name</small>
-          </label>
-          <input name="lastname" type="text" />
-        </div>
-
-        <div>
-          <label htmlFor="email">
-            <small>Email</small>
-          </label>
-          <input name="email" type="text" />
-        </div>
-
-        <div>
           <label htmlFor="password">
             <small>Password</small>
           </label>
           <input name="password" type="password" />
         </div>
+        {props.name === 'signup' ? (
+          <div>
+            <div>
+              <label htmlFor="firstname">
+                <small>First name</small>
+              </label>
+              <input name="firstname" type="text" />
+            </div>
+
+            <div>
+              <label htmlFor="lastname">
+                <small>Last name</small>
+              </label>
+              <input name="lastname" type="text" />
+            </div>
+
+            <div>
+              <label htmlFor="email">
+                <small>Email</small>
+              </label>
+              <input name="email" type="text" />
+            </div>
+          </div>
+        ) : null}
 
         <div>
           <button type="submit">{displayName}</button>
@@ -84,10 +87,12 @@ const mapDispatch = (dispatch) => {
       evt.preventDefault();
       const formName = evt.target.name;
       const username = evt.target.username.value;
-      const password = evt.target.password.value;
-      const firstname = evt.target.firstname.value;
-      const lastname = evt.target.lastname.value;
-      const email = evt.target.email.value;
+      const password = evt.target.password ? evt.target.password.value : null;
+      const firstname = evt.target.firstname
+        ? evt.target.firstname.value
+        : null;
+      const lastname = evt.target.lastname ? evt.target.lastname.value : null;
+      const email = evt.target.email ? evt.target.email.value : null;
       dispatch(
         authenticate(username, password, firstname, lastname, email, formName)
       );
