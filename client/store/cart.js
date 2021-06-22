@@ -40,6 +40,7 @@ export const addedToCart = (userId, cardId) => {
           headers: { token: window.localStorage.token },
         }
       );
+      console.log("ATC Thunk->", data);
       dispatch(addToCart(data));
     } catch (error) {
       console.log(error);

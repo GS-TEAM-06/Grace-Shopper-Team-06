@@ -14,13 +14,17 @@ class Card extends Component {
     this.props.fetchCard(id);
   }
 
-  handleClick(cardId) {
-    this.props.addedToCart(cardId);
+  handleClick(event) {
+    console.log("does this work?");
+    const usersId = this.props.user.id;
+    const cardsId = event.target.value;
+    console.log("cardsId->", cardsId);
+    this.props.addedToCart(usersId, cardsId);
   }
 
   render() {
-    console.log(this.props);
-    const { singleCard } = this.props;
+    console.log("card props ->", this.props);
+    const { singleCard, user } = this.props;
     return (
       <div>
         <h3>{singleCard.name}</h3>
@@ -28,7 +32,7 @@ class Card extends Component {
         <img src={singleCard.imageUrl} />
         <h6>{singleCard.description}</h6>
         <h3>{singleCard.price}</h3>
-        <button type="button" onClick={this.handleClick(cardId)}>
+        <button type="button" value={singleCard.id} onClick={this.handleClick}>
           Add To Cart
         </button>
       </div>
@@ -37,15 +41,17 @@ class Card extends Component {
 }
 
 const mapState = (state) => {
+  console.log("card state->", state);
   return {
     singleCard: state.card,
+    user: state.auth,
   };
 };
 
 const mapDispatch = (dispatch) => {
   return {
     fetchCard: (id) => dispatch(fetchCard(id)),
-    addedToCart: (cardId) => dispatch(addedToCart(cardId)),
+    addedToCart: (userId, cardId) => dispatch(addedToCart(userId, cardId)),
   };
 };
 
