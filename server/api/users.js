@@ -251,6 +251,7 @@ router.delete(
   isAuthenticated,
   isSameUser,
   async (req, res, next) => {
+    console.log("Am I in the delete route?");
     try {
       // find the cart instance that matches this user's id
       let cart = await Orders.findOne({
@@ -267,22 +268,29 @@ router.delete(
         error.status = 404;
         next(error);
       }
-
+      console.log("plainCart->", plainCart.orderItems[2].quantity);
       // walk through the orderItems in this cart
       // if the card quantity is greater than one, decrement the quantity
+      console.log("What is req.body.caardId--->,", req.body.cardId);
       for (let i = 0; i < plainCart.orderItems.length; i++) {
-        if (plainCart.orderItems[i].cardId === req.body.cardId) {
-          if (plainCart.orderItems[i].quantity > 1) {
-            await OrderItems.update(
-              { quantity: plainCart.orderItems[i].quantity - 1 },
-              { where: { cardId: plainCart.orderItems[i].cardId } }
+        if (
+          Number(plainCart.orderItems[i].cardId) === Number(req.body.cardId)
+        ) {
+          if (Number(plainCart.orderItems[i].quantity) > 1) {
+            console.log("Line 277-->");
+            let orderItem = await (
+              await OrderItems.findByPk(plainCart.orderItems[i].id)
+            ).update(
+              { quantity: plainCart.orderItems[i].quantity - 1 }
+              // { where: { cardId: plainCart.orderItems[i].cardId } }
             );
-
+            console.log("orderItem--->", orderItem);
             // else if card quantity is only 1, delete the orderItem
           } else if (plainCart.orderItems[i].quantity === 1) {
-            await OrderItems.destroy({
-              where: { cardId: plainCart.orderItems[i].cardId },
-            });
+            await (
+              await OrderItems.findByPk(plainCart.orderItems[i].id)
+            ).destroy();
+            // where: { cardId: plainCart.orderItems[i].cardId },
           }
         }
       }
