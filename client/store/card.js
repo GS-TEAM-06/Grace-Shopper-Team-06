@@ -1,10 +1,10 @@
-import axios from "axios";
+import axios from 'axios';
 
 //action types
-const SET_CARD = "SET_CARD";
-const CREATE_CARD = "ADD_CARD";
-const UPDATE_CARD = "UPDATE_CARD";
-const DELETE_CARD = "DELETE_CARD";
+const SET_CARD = 'SET_CARD';
+const CREATE_CARD = 'ADD_CARD';
+const UPDATE_CARD = 'UPDATE_CARD';
+const DELETE_CARD = 'DELETE_CARD';
 
 //action creators
 const setCard = (card) => {
@@ -46,24 +46,31 @@ export const fetchCard = (id) => async (dispatch) => {
 };
 
 export const createCardThunk = (card, history) => async (dispatch) => {
-  const { data: createdCard } = await axios.post("/api/cards/", card);
+  const { data: createdCard } = await axios.post('/api/cards/', card, {
+    headers: { token: window.localStorage.token },
+  });
   dispatch(createCard(createdCard));
-  history.push("/cards");
+  history.push('/cards');
 };
 
 export const updateCardThunk = (singleCard, history) => async (dispatch) => {
   const { data: updatedCard } = await axios.put(
     `/api/cards/${singleCard.id}`,
-    singleCard
+    singleCard,
+    {
+      headers: { token: window.localStorage.token },
+    }
   );
   dispatch(updateCard(updatedCard));
   history.push(`/cards/${singleCard.id}`);
 };
 
 export const deleteCardThunk = (id, history) => async (dispatch) => {
-  const { data: card } = await axios.delete(`/api/cards/${id}`);
+  const { data: card } = await axios.delete(`/api/cards/${id}`, {
+    headers: { token: window.localStorage.token },
+  });
   dispatch(deleteCard(card));
-  history.push("/cards");
+  // history.push('/cards');
 };
 
 //reducer

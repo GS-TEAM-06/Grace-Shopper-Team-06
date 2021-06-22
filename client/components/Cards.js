@@ -1,18 +1,19 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
-import { fetchCards } from "../store/cards";
-import { addedToCart } from "../store/cart";
-import { deleteCardThunk } from "../store/card";
-import { Link } from "react-router-dom";
-import Home from "./Home";
-import axios from "axios";
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { fetchCards } from '../store/cards';
+import { addedToCart } from '../store/cart';
+import { deleteCardThunk } from '../store/card';
+import { Link } from 'react-router-dom';
+import Home from './Home';
+import axios from 'axios';
+import CreateCard from './CreateCard';
 
 class Cards extends Component {
   constructor(props) {
     super(props);
 
     this.handleClick = this.handleClick.bind(this);
-    this.handleSubmit = this.createCardClick(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   componentDidMount() {
@@ -21,7 +22,7 @@ class Cards extends Component {
 
   async addToGuestCart(cardId) {
     const { data } = await axios.get(`/api/cards/${cardId}`);
-    let guestCart = JSON.parse(localStorage.getItem("guestCart"));
+    let guestCart = JSON.parse(localStorage.getItem('guestCart'));
     guestCart.push(data);
     localStorage.guestCart = JSON.stringify(guestCart);
   }
@@ -39,6 +40,7 @@ class Cards extends Component {
   handleSubmit(event, CardId) {
     event.preventDefault();
     this.props.deleteCard(CardId);
+    this.props.fetchCards();
   }
 
   render() {
@@ -73,7 +75,7 @@ class Cards extends Component {
                 <button
                   type="submit"
                   className="remove"
-                  onClick={(event) => handleSubmit(event, card.id)}
+                  onClick={(event) => this.handleSubmit(event, card.id)}
                 >
                   X
                 </button>
