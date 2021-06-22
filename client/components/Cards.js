@@ -5,6 +5,7 @@ import { addedToCart } from "../store/cart";
 import { deleteCardThunk } from "../store/card";
 import { Link } from "react-router-dom";
 import Home from "./Home";
+import axios from "axios";
 
 class Cards extends Component {
   constructor(props) {
@@ -18,8 +19,21 @@ class Cards extends Component {
     this.props.fetchCards();
   }
 
-  handleClick() {
-    this.props.addedToCart(cardId);
+  async addToGuestCart(cardId) {
+    const { data } = await axios.get(`/api/cards/${cardId}`);
+    let guestCart = JSON.parse(localStorage.getItem("guestCart"));
+    guestCart.push(data);
+    localStorage.guestCart = JSON.stringify(guestCart);
+  }
+
+  handleClick(event) {
+    if (this.props.user.id) {
+      const usersId = this.props.user.id;
+      const cardsId = event.target.value;
+      this.props.addedToCart(usersId, cardsId);
+    } else {
+      this.addToGuestCart(event.target.value);
+    }
   }
 
   handleSubmit(event, CardId) {
@@ -52,7 +66,7 @@ class Cards extends Component {
               </h3>
               <img src={card.imageUrl} />
               <h5>{card.price}</h5>
-              <button type="button" onClick={this.handleClick}>
+              <button type="button" value={card.id} onClick={this.handleClick}>
                 Add To Cart
               </button>
               {user.admin ? (
@@ -85,13 +99,13 @@ class Cards extends Component {
 const mapState = (state) => {
   return {
     cards: state.cards,
-    user: state.user,
+    user: state.auth,
   };
 };
 
 const mapDispatch = (dispatch, { history }) => {
   return {
-    addedToCart: (cardId) => dispatch(addedToCart(cardId)),
+    addedToCart: (userId, cardId) => dispatch(addedToCart(userId, cardId)),
     fetchCards: () => dispatch(fetchCards()),
     deleteCard: (cardId) => dispatch(deleteCardThunk(cardId)),
   };

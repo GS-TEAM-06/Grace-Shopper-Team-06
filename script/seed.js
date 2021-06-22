@@ -1,3 +1,5 @@
+const fs = require('fs');
+
 const { db } = require('../server/db');
 const Cards = require('../server/db/models/Cards');
 const Address = require('../server/db/models/Address');
@@ -11,24 +13,24 @@ const rawCards = [
   {
     name: 'Blue-Eyes White Dragon',
     imageUrl: 'randomeimageofyugioh.com/fakeyugioh',
-    price: 999.99,
-    quantity: 8,
+    price: 900,
+    quantity: 80,
     category: 'Yu-Gi-Oh',
     description: 'Some yugioh card',
   },
   {
     name: 'Charizard',
     imageUrl: 'randomeimageofpokemon.com/fakepokemon',
-    price: 99999.99,
-    quantity: 10,
+    price: 80000,
+    quantity: 100,
     category: 'Pokemon',
     description: 'Some pokemon card',
   },
   {
     name: 'Magic',
     imageUrl: 'randomeimageofmagic.com/fakemagic',
-    price: 99.99,
-    quantity: 3,
+    price: 100,
+    quantity: 30,
     category: 'Magic',
     description: 'Some magic card',
   },
@@ -118,7 +120,11 @@ const rawUsers = [
 const seed = async () => {
   try {
     await db.sync({ force: true });
-    const cards = await Promise.all(rawCards.map((card) => Cards.create(card)));
+
+    let rawData = fs.readFileSync('./script/pokescraper/cards.json');
+    let cards = JSON.parse(rawData);
+
+    cards = await Promise.all(cards.map((card) => Cards.create(card)));
     const addresses = await Promise.all(
       rawAddresses.map((address) => Address.create(address))
     );
@@ -129,7 +135,7 @@ const seed = async () => {
     // const user = await User.findByPk(1);
     const carts = [
       await Orders.create({ isOpen: true, total: 0, userId: 1 }),
-      await Orders.create({ isOpen: false, total: 0, userId: 1 }),
+      await Orders.create({ isOpen: true, total: 0, userId: 1 }),
     ];
     const orderItems = [
       await OrderItems.create({ quantity: 1, cardId: 1, orderId: 1 }),
@@ -143,6 +149,8 @@ const seed = async () => {
       await OrderItems.create({ quantity: 9, cardId: 3, orderId: 2 }),
     ];
 
+    // random change
+    
     // test cart display:
     // console.log('An open cart with items:');
 
@@ -176,6 +184,15 @@ const seed = async () => {
     // console.log(displayUser);
 
     // seed your database here!
+
+    // console.log('>>>>>>>>>>>> Closing carts:');
+    // carts[0] = await carts[0].update({ isOpen: false });
+    // carts[1] = await carts[1].update({ isOpen: false });
+    // carts[0].isOpen = false;
+    // carts[1].isOpen = false;
+    // await cards[0].save();
+    // await cards[1].save();
+
     return { users, cards, addresses, carts };
   } catch (err) {
     console.log(err);
@@ -190,7 +207,7 @@ if (require.main === module) {
   seed()
     .then(() => {
       console.log('Seeding success!');
-      db.close();
+      // db.close();
     })
     .catch((err) => {
       console.error('Oh noes! Something went wrong!');

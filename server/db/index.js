@@ -27,5 +27,6 @@ module.exports = {
     User,
     Address,
     Cards,
+    OrderItems,
   },
 };

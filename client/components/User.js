@@ -13,7 +13,6 @@ class User extends Component {
   }
 
   render() {
-    console.log("userprops->", this.props);
     const { user } = this.props;
     return (
       <div>
