@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { fetchCards } from "../store/cards";
 import { addedToCart } from "../store/cart";
+import { deleteCardThunk } from "../store/card";
 import { Link } from "react-router-dom";
 import Home from "./Home";
 import axios from "axios";
@@ -11,6 +12,7 @@ class Cards extends Component {
     super(props);
 
     this.handleClick = this.handleClick.bind(this);
+    this.handleSubmit = this.createCardClick(this);
   }
 
   componentDidMount() {
@@ -19,26 +21,34 @@ class Cards extends Component {
 
   async addToGuestCart(cardId) {
     const { data } = await axios.get(`/api/cards/${cardId}`);
-    let guestCart = JSON.parse(localStorage.getItem('guestCart'))
-    guestCart.push(data)
-    localStorage.guestCart = JSON.stringify(guestCart)
-}
+    let guestCart = JSON.parse(localStorage.getItem("guestCart"));
+    guestCart.push(data);
+    localStorage.guestCart = JSON.stringify(guestCart);
+  }
 
   handleClick(event) {
-      if (this.props.user.id) {
-          const usersId = this.props.user.id;
-          const cardsId = event.target.value;
-          this.props.addedToCart(usersId, cardsId);
-      } else {
-        this.addToGuestCart(event.target.value)
-      }
+    if (this.props.user.id) {
+      const usersId = this.props.user.id;
+      const cardsId = event.target.value;
+      this.props.addedToCart(usersId, cardsId);
+    } else {
+      this.addToGuestCart(event.target.value);
+    }
+  }
+
+  handleSubmit(event, CardId) {
+    event.preventDefault();
+    this.props.deleteCard(CardId);
   }
 
   render() {
+    const { isLoggedIn } = this.props;
+    const { user } = this.props;
+    const { cards } = this.props;
     return (
       <div>
         <div>
-          {this.props.isLoggedIn ? (
+          {isLoggedIn ? (
             <div>
               <Home />
             </div>
@@ -48,7 +58,7 @@ class Cards extends Component {
             </div>
           )}
         </div>
-        {this.props.cards.map((card) => {
+        {cards.map((card) => {
           return (
             <div key={card.id}>
               <h3>
@@ -57,11 +67,30 @@ class Cards extends Component {
               <img src={card.imageUrl} />
               <h5>{card.price}</h5>
               <button type="button" value={card.id} onClick={this.handleClick}>
-          Add To Cart
-        </button>
+                Add To Cart
+              </button>
+              {user.admin ? (
+                <button
+                  type="submit"
+                  className="remove"
+                  onClick={(event) => handleSubmit(event, card.id)}
+                >
+                  X
+                </button>
+              ) : (
+                <div />
+              )}
             </div>
           );
         })}
+        {isLoggedIn && user.admin ? (
+          <div>
+            <h1>CREATE NEW CARD</h1>
+            <CreateCard history={this.props.history} />
+          </div>
+        ) : (
+          <div />
+        )}
       </div>
     );
   }
@@ -70,14 +99,15 @@ class Cards extends Component {
 const mapState = (state) => {
   return {
     cards: state.cards,
-    user: state.auth
+    user: state.auth,
   };
 };
 
-const mapDispatch = (dispatch) => {
+const mapDispatch = (dispatch, { history }) => {
   return {
     addedToCart: (userId, cardId) => dispatch(addedToCart(userId, cardId)),
     fetchCards: () => dispatch(fetchCards()),
+    deleteCard: (cardId) => dispatch(deleteCardThunk(cardId)),
   };
 };
 

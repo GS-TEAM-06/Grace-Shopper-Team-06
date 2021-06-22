@@ -8,10 +8,12 @@ import Cards from "./components/Cards";
 import Card from "./components/Card";
 import Cart from "./components/Cart";
 import User from "./components/User";
+import CreateCard from "./components/CreateCard";
+import UpdateCard from "./components/UpdateCard";
 import GuestCart from "./components/GuestCart";
 
 function createGuestCart() {
-  const guestCart = []
+  const guestCart = [];
   if (!JSON.parse(localStorage.getItem("guestCart"))) {
     localStorage.setItem("guestCart", JSON.stringify(guestCart));
   }
@@ -25,19 +27,23 @@ class Routes extends Component {
     this.props.loadInitialData();
   }
 
-
-
   render() {
     const { isLoggedIn } = this.props;
 
     // create guestCart in local storage when opening browser
-    createGuestCart()
+    createGuestCart();
 
     return (
       <div>
         {isLoggedIn ? (
           <Switch>
-            <Route exact path="/" render={(props) => <Cards {...props} isLoggedIn={this.props.isLoggedIn} />} />
+            <Route
+              exact
+              path="/"
+              render={(props) => (
+                <Cards {...props} isLoggedIn={this.props.isLoggedIn} />
+              )}
+            />
             <Route
               path="/user"
               render={(props) => <User {...props} userId={this.props.userId} />}
