@@ -23,7 +23,14 @@ class Cards extends Component {
   async addToGuestCart(cardId) {
     const { data } = await axios.get(`/api/cards/${cardId}`);
     let guestCart = JSON.parse(localStorage.getItem("guestCart"));
-    guestCart.push(data);
+    let guestCartId = guestCart.map((card) => card.id);
+    let index = guestCartId.indexOf(data.id);
+    if (index === -1) {
+      data.quantity = 1;
+      guestCart.push(data);
+    } else {
+      guestCart[index].quantity += 1;
+    }
     localStorage.guestCart = JSON.stringify(guestCart);
   }
 
