@@ -64,10 +64,12 @@ export const fetchCart = (userId) => {
 export const removedFromCart = (userId, cardId) => {
   return async (dispatch) => {
     try {
+      console.log("Does this removeThunk work?");
       const { data } = await axios.delete(`/api/users/${userId}/cart`, {
         data: { cardId },
         headers: { token: window.localStorage.token },
       });
+      console.log("Remove thunk data->", data);
       dispatch(removeFromCart(data));
     } catch (error) {
       console.log(error);
