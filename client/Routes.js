@@ -8,7 +8,8 @@ import Cards from "./components/Cards";
 import Card from "./components/Card";
 import Cart from "./components/Cart";
 import User from "./components/User";
-
+import CreateCard from "./components/CreateCard";
+import UpdateCard from "./components/UpdateCard";
 /**
  * COMPONENT
  */
@@ -24,7 +25,13 @@ class Routes extends Component {
       <div>
         {isLoggedIn ? (
           <Switch>
-            <Route exact path="/" render={(props) => <Cards {...props} isLoggedIn={this.props.isLoggedIn} />} />
+            <Route
+              exact
+              path="/"
+              render={(props) => (
+                <Cards {...props} isLoggedIn={this.props.isLoggedIn} />
+              )}
+            />
             <Route
               path="/user"
               render={(props) => <User {...props} userId={this.props.userId} />}

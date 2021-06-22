@@ -19,7 +19,7 @@ class Card extends Component {
   }
 
   render() {
-    console.log(this.props);
+    const { user } = this.props;
     const { singleCard } = this.props;
     return (
       <div>
@@ -31,6 +31,14 @@ class Card extends Component {
         <button type="button" onClick={this.handleClick}>
           Add To Cart
         </button>
+        {user.admin ? (
+          <div>
+            <h1>UPDATE CARD INFORMATION</h1>
+            <UpdateCard history={this.props.history} />
+          </div>
+        ) : (
+          <div />
+        )}
       </div>
     );
   }
@@ -39,6 +47,7 @@ class Card extends Component {
 const mapState = (state) => {
   return {
     singleCard: state.card,
+    user: state.user,
   };
 };
 
