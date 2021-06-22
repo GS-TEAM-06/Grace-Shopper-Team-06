@@ -3,6 +3,7 @@ const db = require('../db');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const axios = require('axios');
+const Order = require('./order');
 
 const SALT_ROUNDS = 5;
 
@@ -97,8 +98,24 @@ const hashPassword = async (user) => {
   }
 };
 
-User.beforeCreate(hashPassword);
+User.beforeCreate((user) => {
+  hashPassword(user);
+});
+
+User.afterCreate((user) => {
+  Order.create({ isOpen: true, userId: user.id });
+});
+
 User.beforeUpdate(hashPassword);
-User.beforeBulkCreate((users) => Promise.all(users.map(hashPassword)));
+
+User.beforeBulkCreate((users) => {
+  Promise.all(users.map(hashPassword));
+});
+
+User.afterBulkCreate((users) => {
+  users.map((user) => {
+    Order.create({ isOpen: true, userId: user.id });
+  });
+});
 
 module.exports = User;

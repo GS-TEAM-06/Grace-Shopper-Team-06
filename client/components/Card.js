@@ -1,9 +1,9 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
-import { fetchCard } from "../store/card";
-import { addedToCart } from "../store/cart";
-import axios from "axios";
-import UpdateCard from "./UpdateCard";
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { fetchCard } from '../store/card';
+import { addedToCart } from '../store/cart';
+import axios from 'axios';
+import UpdateCard from './UpdateCard';
 
 class Card extends Component {
   constructor(props) {

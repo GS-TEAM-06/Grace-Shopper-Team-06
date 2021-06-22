@@ -1,12 +1,12 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
-import { fetchCards } from "../store/cards";
-import { addedToCart } from "../store/cart";
-import { deleteCardThunk } from "../store/card";
-import { Link } from "react-router-dom";
-import Home from "./Home";
-import axios from "axios";
-import CreateCard from "./CreateCard";
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { fetchCards } from '../store/cards';
+import { addedToCart } from '../store/cart';
+import { deleteCardThunk } from '../store/card';
+import { Link } from 'react-router-dom';
+import Home from './Home';
+import axios from 'axios';
+import CreateCard from './CreateCard';
 
 class Cards extends Component {
   constructor(props) {
@@ -47,6 +47,7 @@ class Cards extends Component {
   handleSubmit(event, CardId) {
     event.preventDefault();
     this.props.deleteCard(CardId);
+    this.props.fetchCards();
   }
 
   render() {
@@ -81,7 +82,7 @@ class Cards extends Component {
                 <button
                   type="submit"
                   className="remove"
-                  onClick={(event) => handleSubmit(event, card.id)}
+                  onClick={(event) => this.handleSubmit(event, card.id)}
                 >
                   X
                 </button>

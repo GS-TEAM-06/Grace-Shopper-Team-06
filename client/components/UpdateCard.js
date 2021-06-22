@@ -1,17 +1,17 @@
-import React, { Component } from "react";
-import { updateCardThunk } from "../store/card";
-import { connect } from "react-redux";
-import { Link } from "react-router-dom";
+import React, { Component } from 'react';
+import { updateCardThunk } from '../store/card';
+import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 
 class UpdateCard extends Component {
   constructor() {
     super();
     this.state = {
-      name: "",
+      name: '',
       price: 0,
-      description: "",
+      description: '',
       quantity: 0,
-      category: "",
+      category: '',
     };
 
     this.handleChange = this.handleChange.bind(this);
@@ -28,11 +28,11 @@ class UpdateCard extends Component {
     event.preventDefault();
     this.props.updateCard({ ...this.props.singleCard, ...this.state });
     this.setState({
-      name: "",
+      name: '',
       price: 0,
-      description: "",
+      description: '',
       quantity: 0,
-      category: "",
+      category: '',
     });
   }
 
