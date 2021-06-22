@@ -4,8 +4,18 @@ import { withRouter, Route, Switch, Redirect } from "react-router-dom";
 import { Login, Signup } from "./components/AuthForm";
 import Home from "./components/Home";
 import { me } from "./store";
-import Cards from "../client/components/Cards";
-import Card from "../client/components/Card";
+import Cards from "./components/Cards";
+import Card from "./components/Card";
+import Cart from "./components/Cart";
+import User from "./components/User";
+import GuestCart from "./components/GuestCart";
+
+function createGuestCart() {
+  const guestCart = []
+  if (!JSON.parse(localStorage.getItem("guestCart"))) {
+    localStorage.setItem("guestCart", JSON.stringify(guestCart));
+  }
+}
 
 /**
  * COMPONENT
@@ -15,22 +25,37 @@ class Routes extends Component {
     this.props.loadInitialData();
   }
 
+
+
   render() {
     const { isLoggedIn } = this.props;
+
+    // create guestCart in local storage when opening browser
+    createGuestCart()
 
     return (
       <div>
         {isLoggedIn ? (
           <Switch>
-            <Route path="/home" component={Home} />
-            <Redirect to="/home" />
+            <Route exact path="/" render={(props) => <Cards {...props} isLoggedIn={this.props.isLoggedIn} />} />
+            <Route
+              path="/user"
+              render={(props) => <User {...props} userId={this.props.userId} />}
+            />
+            <Route
+              path="/cart"
+              render={(props) => <Cart {...props} userId={this.props.userId} />}
+            />
+            <Route path="/cards/:id" component={Card} />
+            <Redirect to="/" />
           </Switch>
         ) : (
           <Switch>
-            <Route path="/" exact component={Cards} />
+            <Route exact path="/" component={Cards} />
             <Route path="/cards/:id" component={Card} />
             <Route path="/login" component={Login} />
             <Route path="/signup" component={Signup} />
+            <Route path="/cart" component={GuestCart} />
           </Switch>
         )}
       </div>
@@ -42,10 +67,12 @@ class Routes extends Component {
  * CONTAINER
  */
 const mapState = (state) => {
+  console.log("this is the sate --> ", state);
   return {
     // Being 'logged in' for our purposes will be defined has having a state.auth that has a truthy id.
     // Otherwise, state.auth will be an empty object, and state.auth.id will be falsey
     isLoggedIn: !!state.auth.id,
+    userId: state.auth.id,
   };
 };
 
