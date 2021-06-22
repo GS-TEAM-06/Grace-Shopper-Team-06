@@ -1,3 +1,5 @@
+const fs = require('fs');
+
 const { db } = require('../server/db');
 const Cards = require('../server/db/models/Cards');
 const Address = require('../server/db/models/Address');
@@ -118,7 +120,11 @@ const rawUsers = [
 const seed = async () => {
   try {
     await db.sync({ force: true });
-    const cards = await Promise.all(rawCards.map((card) => Cards.create(card)));
+
+    let rawData = fs.readFileSync('./script/pokescraper/cards.json');
+    let cards = JSON.parse(rawData);
+
+    cards = await Promise.all(cards.map((card) => Cards.create(card)));
     const addresses = await Promise.all(
       rawAddresses.map((address) => Address.create(address))
     );
@@ -143,6 +149,8 @@ const seed = async () => {
       await OrderItems.create({ quantity: 9, cardId: 3, orderId: 2 }),
     ];
 
+    // random change
+    
     // test cart display:
     // console.log('An open cart with items:');
 

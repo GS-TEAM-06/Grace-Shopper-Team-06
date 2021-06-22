@@ -38,7 +38,14 @@ router.post('/', isAuthenticated, isAdmin, async (req, res, next) => {
 router.get('/:id', async (req, res, next) => {
   try {
     const card = await Cards.findByPk(req.params.id);
-    res.json(card);
+    if (card === null) {
+      // const error = new Error('Card not found!');
+      // error.status = 404;
+      // next(error);
+      res.status(404).end('Card not found!');
+    } else {
+      res.json(card);
+    }
   } catch (err) {
     next(err);
   }

@@ -2,11 +2,9 @@
 
 const { expect } = require('chai');
 const request = require('supertest');
-const {
-  db,
-  // models: { Orders },
-} = require('../../server/db');
 const Orders = require('../../server/db/models/order');
+const OrderItems = require('../../server/db/models/orderItem');
+const Cards = require('../../server/db/models/Cards');
 const User = require('../../server/db/models/user');
 
 const seed = require('../../script/seed');
@@ -23,28 +21,37 @@ describe('Order routes', async () => {
   });
 
   describe('/api/orders/', () => {
-    it('GET /api/orders', async () => {
+    it('GET /api/orders protected by admin login', async () => {
       // should fail, not authenticated as admin
-      let res = await request(app).get('/api/users').expect(401);
+      let res = await request(app).get('/api/orders').expect(401);
       expect(res.body).to.deep.equal({});
-
-      res = await request(app).get('/api/users').set({ token }).expect(200);
+    });
+    it('GET /api/orders returns all orders', async () => {
+      let res = await request(app)
+        .get('/api/orders')
+        .set({ token })
+        .expect(200);
 
       expect(res.body).to.be.an('array');
-      expect(res.body.length).to.equal(6);
+      expect(res.body.length).to.equal(await Orders.count());
     });
 
-    xit('adding a new order item adds it to the cart with its price', () => {
-      expect(false).to.equal(true);
+    it('GET /api/orders/:id returns that order', async () => {
+      let order = await Orders.findOne({
+        include: [{ model: OrderItems, include: [Cards] }],
+      });
+      let res = await request(app)
+        .get(`/api/orders/${order.id}`)
+        .set({ token })
+        .expect(200);
+      expect(res.body.id).to.deep.equal(order.id);
     });
-    xit('adding an existing order item increases quantity in the cart and updates price', () => {
-      expect(false).to.equal(true);
-    });
-    xit('deleting an order item removes it from the cart', () => {
-      expect(false).to.equal(true);
-    });
-    xit('closing a cart removes inventory from the cards db', () => {
-      expect(false).to.equal(true);
+
+    it('GET /api/orders/:id protected by admin login', async () => {
+      let order = await Orders.findOne({
+        include: [{ model: OrderItems, include: [Cards] }],
+      });
+      let res = await request(app).get(`/api/orders/${order.id}`).expect(401);
     });
   }); // end describe('/api/users')
 }); // end describe('User routes')

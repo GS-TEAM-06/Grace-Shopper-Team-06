@@ -40,7 +40,8 @@ describe('Card routes', () => {
         .expect(200);
 
       expect(res.body).to.be.an('array');
-      expect(res.body.length).to.equal(4);
+
+      expect(res.body.length).to.equal(await Cards.count());
     });
 
     it('DELETE /api/cards/id protected by admin login', async () => {
@@ -52,13 +53,15 @@ describe('Card routes', () => {
     });
 
     it('DELETE /api/cards/id removes the card', async () => {
-      const res = await request(app)
+      let res = await request(app)
         .delete(`/api/cards/${testCard.id}`)
         .set({ token })
         .expect(200);
 
       let deletedCard = await Cards.findByPk(testCard.id);
       expect(deletedCard).to.equal(null);
+
+      await request(app).get(`/api/cards/${testCard.id}`).expect(404);
     });
 
     it('PUT /api/cards/id protected by admin login', async () => {
