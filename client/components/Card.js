@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { fetchCard } from "../store/card";
 import { addedToCart } from "../store/cart";
+import axios from "axios";
 
 class Card extends Component {
   constructor(props) {
@@ -14,16 +15,24 @@ class Card extends Component {
     this.props.fetchCard(id);
   }
 
+  async addToGuestCart(cardId) {
+    const { data } = await axios.get(`/api/cards/${cardId}`);
+    let guestCart = JSON.parse(localStorage.getItem('guestCart'))
+    guestCart.push(data)
+    localStorage.guestCart = JSON.stringify(guestCart)
+}
+
   handleClick(event) {
-    console.log("does this work?");
-    const usersId = this.props.user.id;
-    const cardsId = event.target.value;
-    console.log("cardsId->", cardsId);
-    this.props.addedToCart(usersId, cardsId);
-  }
+    if (this.props.user.id) {
+        const usersId = this.props.user.id;
+        const cardsId = event.target.value;
+        this.props.addedToCart(usersId, cardsId);
+    } else {
+      this.addToGuestCart(event.target.value)
+    }
+}
 
   render() {
-    console.log("card props ->", this.props);
     const { singleCard, user } = this.props;
     return (
       <div>
@@ -41,7 +50,6 @@ class Card extends Component {
 }
 
 const mapState = (state) => {
-  console.log("card state->", state);
   return {
     singleCard: state.card,
     user: state.auth,

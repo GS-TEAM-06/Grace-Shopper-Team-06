@@ -64,7 +64,6 @@ class Cart extends Component {
 }
 
 const mapState = (state) => {
-  console.log("State of Cart->", state);
   return {
     cart: state.cart,
     user: state.auth,

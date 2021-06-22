@@ -9,7 +9,13 @@ import Card from "./components/Card";
 import Cart from "./components/Cart";
 import User from "./components/User";
 import GuestCart from "./components/GuestCart";
-import {createGuestCart} from "./GuestCart";
+
+function createGuestCart() {
+  const guestCart = []
+  if (!JSON.parse(localStorage.getItem("guestCart"))) {
+    localStorage.setItem("guestCart", JSON.stringify(guestCart));
+  }
+}
 
 /**
  * COMPONENT
@@ -20,9 +26,9 @@ class Routes extends Component {
   }
 
 
+
   render() {
     const { isLoggedIn } = this.props;
-    console.log("Route-->", this.props);
 
     // create guestCart in local storage when opening browser
     createGuestCart()
@@ -61,7 +67,7 @@ class Routes extends Component {
  * CONTAINER
  */
 const mapState = (state) => {
-  console.log("what is this?? ", state);
+  console.log("this is the sate --> ", state);
   return {
     // Being 'logged in' for our purposes will be defined has having a state.auth that has a truthy id.
     // Otherwise, state.auth will be an empty object, and state.auth.id will be falsey
