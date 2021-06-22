@@ -149,6 +149,8 @@ const seed = async () => {
       await OrderItems.create({ quantity: 9, cardId: 3, orderId: 2 }),
     ];
 
+    // random change
+    
     // test cart display:
     // console.log('An open cart with items:');
 
