@@ -17,20 +17,20 @@ class Card extends Component {
 
   async addToGuestCart(cardId) {
     const { data } = await axios.get(`/api/cards/${cardId}`);
-    let guestCart = JSON.parse(localStorage.getItem('guestCart'))
-    guestCart.push(data)
-    localStorage.guestCart = JSON.stringify(guestCart)
-}
+    let guestCart = JSON.parse(localStorage.getItem("guestCart"));
+    guestCart.push(data);
+    localStorage.guestCart = JSON.stringify(guestCart);
+  }
 
   handleClick(event) {
     if (this.props.user.id) {
-        const usersId = this.props.user.id;
-        const cardsId = event.target.value;
-        this.props.addedToCart(usersId, cardsId);
+      const usersId = this.props.user.id;
+      const cardsId = event.target.value;
+      this.props.addedToCart(usersId, cardsId);
     } else {
-      this.addToGuestCart(event.target.value)
+      this.addToGuestCart(event.target.value);
     }
-}
+  }
 
   render() {
     const { singleCard, user } = this.props;
@@ -44,6 +44,14 @@ class Card extends Component {
         <button type="button" value={singleCard.id} onClick={this.handleClick}>
           Add To Cart
         </button>
+        {user.admin ? (
+          <div>
+            <h1>UPDATE CARD INFORMATION</h1>
+            <UpdateCard history={this.props.history} />
+          </div>
+        ) : (
+          <div />
+        )}
       </div>
     );
   }
