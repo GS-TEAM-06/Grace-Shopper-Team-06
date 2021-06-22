@@ -9,8 +9,10 @@ class Cart extends Component {
     super();
     // this.handleDecreaseQuantity = this.handleDecreaseQuantity.bind(this);
     // this.handleIncreaseQuantity = this.handleIncreaseQuantity.bind(this);
-    this.handleRemove = this.handleRemove.bind(this);
+    this.handleSubtract = this.handleSubtract.bind(this);
     this.handleAdd = this.handleAdd.bind(this);
+    this.removeFromCart = this.removeFromCart.bind(this);
+    this.clearCart = this.clearCart.bind(this);
   }
 
   componentDidMount() {
@@ -19,7 +21,7 @@ class Cart extends Component {
     this.props.fetchCart(userId);
   }
 
-  handleRemove(event) {
+  handleSubtract(event) {
     const userId = this.props.user.id;
     const cardId = event.target.value;
     console.log("cardId->", cardId);
@@ -32,43 +34,62 @@ class Cart extends Component {
     console.log("cardId->", cardId);
     this.props.addedToCart(userId, cardId);
   }
-  // handleIncreaseQuantity(cardId) {
-  //   this.props.addedQty(cardId);
-  // }
 
-  // handleDecreaseQuantity(cardId) {
-  //   this.props.subtractedQty(cardId);
-  // }
+  removeFromCart(event) {
+    const userId = this.props.user.id;
+    const cardId = event.target.value.cardId;
+    event.target.value.quantity === 0;
+    console.log("cardId->", cardId);
+    this.props.addedToCart(userId, cardId);
+  }
+
+  clearCart() {
+    console.log("this.props.cart->", this.props.cart);
+    let userId = this.props.user.id;
+    this.props.cart.orderItems = [];
+    this.props.fetchCart(userId);
+  }
 
   render() {
     const { orderItems } = this.props.cart;
     const hasOrderItems = orderItems && orderItems.length;
     // console.log("order items?->", orderItems);
     let items = hasOrderItems ? (
-      orderItems.map((objectItem) => {
-        // console.log("objectItem qty ->", objectItem);
-        return (
-          <div key={objectItem.card.id}>
-            <div>
-              <img src={objectItem.card.imgUrl} />
+      <div>
+        {orderItems.map((objectItem) => {
+          // console.log("objectItem qty ->", objectItem);
+          return (
+            <div key={objectItem.card.id}>
+              <div>
+                <img src={objectItem.card.imgUrl} />
 
-              <Link to={`/cards/${objectItem.card.id}`}>
-                <p>Name: {objectItem.card.name}</p>
-              </Link>
-              <p>Description: {objectItem.card.description}</p>
-              <p>Price: {objectItem.card.price}</p>
-              <p>Quantity: {objectItem.quantity}</p>
+                <Link to={`/cards/${objectItem.card.id}`}>
+                  <p>Name: {objectItem.card.name}</p>
+                </Link>
+                <p>Description: {objectItem.card.description}</p>
+                <p>Price: {objectItem.card.price}</p>
+                <p>Quantity: {objectItem.quantity}</p>
 
-              <button value={objectItem.cardId} onClick={this.handleAdd}>
-                +
-              </button>
-              <button value={objectItem.cardId} onClick={this.handleRemove}>
-                -
-              </button>
+                <button value={objectItem.cardId} onClick={this.handleAdd}>
+                  +
+                </button>
+                <button value={objectItem.cardId} onClick={this.handleSubtract}>
+                  -
+                </button>
+                <button value={objectItem.cardId} onClick={this.removeFromCart}>
+                  Remove
+                </button>
+              </div>
             </div>
-          </div>
-        );
-      })
+          );
+        })}
+
+        <div>
+          <p>
+            <button onClick={this.clearCart}>Clear Cart</button>
+          </p>
+        </div>
+      </div>
     ) : (
       <p>Nothing</p>
     );

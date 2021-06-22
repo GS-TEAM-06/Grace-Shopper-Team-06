@@ -1,12 +1,12 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { fetchCards } from '../store/cards';
-import { addedToCart } from '../store/cart';
-import { deleteCardThunk } from '../store/card';
-import { Link } from 'react-router-dom';
-import Home from './Home';
-import axios from 'axios';
-import CreateCard from './CreateCard';
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import { fetchCards } from "../store/cards";
+import { addedToCart } from "../store/cart";
+import { deleteCardThunk } from "../store/card";
+import { Link } from "react-router-dom";
+import Home from "./Home";
+import axios from "axios";
+import CreateCard from "./CreateCard";
 
 class Cards extends Component {
   constructor(props) {
@@ -22,7 +22,7 @@ class Cards extends Component {
 
   async addToGuestCart(cardId) {
     const { data } = await axios.get(`/api/cards/${cardId}`);
-    let guestCart = JSON.parse(localStorage.getItem('guestCart'));
+    let guestCart = JSON.parse(localStorage.getItem("guestCart"));
     guestCart.push(data);
     localStorage.guestCart = JSON.stringify(guestCart);
   }
