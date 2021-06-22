@@ -1,8 +1,8 @@
-const Sequelize = require('sequelize');
-const db = require('../db');
-const Orders = require('./order');
+const Sequelize = require("sequelize");
+const db = require("../db");
+const Orders = require("./order");
 
-const OrderItems = db.define('orderItems', {
+const OrderItems = db.define("orderItems", {
   quantity: {
     type: Sequelize.INTEGER,
     allowNull: false,

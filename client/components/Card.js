@@ -17,9 +17,9 @@ class Card extends Component {
   handleClick(event) {
     console.log("does this work?");
     const usersId = this.props.user.id;
-    const cardsId = event.target.value;
-    console.log("cardsId->", cardsId);
-    this.props.addedToCart(usersId, cardsId);
+    const cardId = event.target.value;
+
+    this.props.addedToCart(usersId, cardId);
   }
 
   render() {

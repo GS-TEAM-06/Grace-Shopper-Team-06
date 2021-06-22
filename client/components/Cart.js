@@ -43,7 +43,7 @@ class Cart extends Component {
   render() {
     const { orderItems } = this.props.cart;
     const hasOrderItems = orderItems && orderItems.length;
-    // console.log("order items?->", orderItems);
+    console.log("order items?->", orderItems);
     let items = hasOrderItems ? (
       orderItems.map((objectItem) => {
         // console.log("objectItem qty ->", objectItem);
