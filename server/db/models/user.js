@@ -98,9 +98,7 @@ const hashPassword = async (user) => {
   }
 };
 
-User.beforeCreate((user) => {
-  hashPassword(user);
-});
+User.beforeCreate(hashPassword);
 
 User.afterCreate((user) => {
   Order.create({ isOpen: true, userId: user.id });
@@ -108,9 +106,7 @@ User.afterCreate((user) => {
 
 User.beforeUpdate(hashPassword);
 
-User.beforeBulkCreate((users) => {
-  Promise.all(users.map(hashPassword));
-});
+User.beforeBulkCreate((users) => Promise.all(users.map(hashPassword)));
 
 User.afterBulkCreate((users) => {
   users.map((user) => {
