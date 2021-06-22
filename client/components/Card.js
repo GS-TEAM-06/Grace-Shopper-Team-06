@@ -14,7 +14,7 @@ class Card extends Component {
     this.props.fetchCard(id);
   }
 
-  handleClick() {
+  handleClick(cardId) {
     this.props.addedToCart(cardId);
   }
 
@@ -28,7 +28,7 @@ class Card extends Component {
         <img src={singleCard.imageUrl} />
         <h6>{singleCard.description}</h6>
         <h3>{singleCard.price}</h3>
-        <button type="button" onClick={this.handleClick}>
+        <button type="button" onClick={this.handleClick(cardId)}>
           Add To Cart
         </button>
       </div>

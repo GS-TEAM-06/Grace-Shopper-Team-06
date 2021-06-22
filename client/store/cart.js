@@ -31,13 +31,13 @@ const removeFromCart = (cart) => {
 export const addedToCart = (userId, cardId) => {
   return async (dispatch) => {
     try {
-      const {data} = await axios.put(
+      const { data } = await axios.put(
         `/api/users/${userId}/cart`,
         {
           cardId: cardId,
         },
         {
-          headers: {token: window.localStorage.token},
+          headers: { token: window.localStorage.token },
         }
       );
       dispatch(addToCart(data));
@@ -50,8 +50,8 @@ export const addedToCart = (userId, cardId) => {
 export const fetchCart = (userId) => {
   return async (dispatch) => {
     try {
-      const {data} = await axios.get(`/api/users/${userId}/cart`, {
-        headers: {token: window.localStorage.token},
+      const { data } = await axios.get(`/api/users/${userId}/cart`, {
+        headers: { token: window.localStorage.token },
       });
       dispatch(getCart(data));
     } catch (error) {
@@ -63,8 +63,10 @@ export const fetchCart = (userId) => {
 export const removedFromCart = (userId, cardId) => {
   return async (dispatch) => {
     try {
-      const {data} = await axios.delete(
-        `/api/users/${userId}/cart`, {data: {cardId}, headers: {token: window.localStorage.token}});
+      const { data } = await axios.delete(`/api/users/${userId}/cart`, {
+        data: { cardId },
+        headers: { token: window.localStorage.token },
+      });
       dispatch(removeFromCart(data));
     } catch (error) {
       console.log(error);

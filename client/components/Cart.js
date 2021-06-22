@@ -30,7 +30,7 @@ class Cart extends Component {
       orderItems.map((objectItem) => {
         return (
           <div key={objectItem.card.id}>
-            <li>
+            <p>
               <div>
                 <img src={objectItem.card.imgUrl} />
               </div>
@@ -39,7 +39,7 @@ class Cart extends Component {
               </Link>
               <p>{objectItem.card.description}</p>
               <p>{objectItem.card.price}</p>
-            </li>
+            </p>
             {/* <div>
               <form>
                 <div onClick={this.handleDecreaseQuantity}>-</div>
@@ -72,7 +72,8 @@ const mapState = (state) => {
 const mapDispatch = (dispatch) => {
   return {
     fetchCart: (userId) => dispatch(fetchCart(userId)),
-    removedFromCart: (userId, cardId) => dispatch(removedFromCart(userId, cardId)),
+    removedFromCart: (userId, cardId) =>
+      dispatch(removedFromCart(userId, cardId)),
   };
 };
 
