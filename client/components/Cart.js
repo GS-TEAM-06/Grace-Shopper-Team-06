@@ -13,8 +13,8 @@ class Cart extends Component {
   }
 
   componentDidMount() {
-    //need to get userId
-    let userId = this.props.userId;
+    console.log("mounting userID->", this.props);
+    let userId = this.props.user.id;
     this.props.fetchCart(userId);
   }
 
@@ -30,16 +30,16 @@ class Cart extends Component {
       orderItems.map((objectItem) => {
         return (
           <div key={objectItem.card.id}>
-            <li>
-              <div>
-                <img src={objectItem.card.imgUrl} />
-              </div>
+            <div>
+              <img src={objectItem.card.imgUrl} />
+
               <Link to={`/cards/${objectItem.card.id}`}>
-                <p>{objectItem.card.name}</p>
+                <p>Name: {objectItem.card.name}</p>
               </Link>
-              <p>{objectItem.card.description}</p>
-              <p>{objectItem.card.price}</p>
-            </li>
+              <p>Description: {objectItem.card.description}</p>
+              <p>Price: {objectItem.card.price}</p>
+              {/* <p>Quantity: {objectItem.card.quantity}</p> */}
+            </div>
             {/* <div>
               <form>
                 <div onClick={this.handleDecreaseQuantity}>-</div>
@@ -64,15 +64,18 @@ class Cart extends Component {
 }
 
 const mapState = (state) => {
+  console.log("State of Cart->", state);
   return {
     cart: state.cart,
+    user: state.auth,
   };
 };
 
 const mapDispatch = (dispatch) => {
   return {
     fetchCart: (userId) => dispatch(fetchCart(userId)),
-    removedFromCart: (userId, cardId) => dispatch(removedFromCart(userId, cardId)),
+    removedFromCart: (userId, cardId) =>
+      dispatch(removedFromCart(userId, cardId)),
   };
 };
 

@@ -2,15 +2,18 @@ const jwt = require('jsonwebtoken');
 const User = require('./db/models/user');
 
 const isAuthenticated = async (req, res, next) => {
-  console.log(req.headers);
+  // console.log(req.headers);
   const token = req.headers['token'];
 
-  // console.log('req.headers:', authHeader);
   if (token == null) {
     return res.sendStatus(401);
   }
   try {
-    const user = (await User.findByToken(token)).get({ plain: true });
+    let user = await User.findByToken(token);
+    if (!user) {
+      return res.sendStatus(401);
+    }
+    user = user.get({ plain: true });
     delete user.password;
     req.user = user;
     next();
@@ -20,10 +23,8 @@ const isAuthenticated = async (req, res, next) => {
 };
 
 const isSameUser = (req, res, next) => {
-  if (req.user.id != req.params.userId) {
-    const error = new Error('Unauthorized!');
-    error.status = 401;
-    next(error);
+  if (!req.user.admin && req.user.id != req.params.userId) {
+    return res.sendStatus(401);
   } else {
     next();
   }
@@ -33,9 +34,7 @@ const isAdmin = (req, res, next) => {
   if (req.user.admin) {
     next();
   } else {
-    const error = new Error('Unauthorized!');
-    error.status = 401;
-    next(error);
+    return res.sendStatus(401);
   }
 };
 

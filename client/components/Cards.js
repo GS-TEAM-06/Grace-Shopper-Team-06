@@ -17,23 +17,23 @@ class Cards extends Component {
   }
 
   handleClick() {
-    this.props.addedToCart(cardId);
+    this.props.addedToCart();
   }
 
   render() {
     return (
       <div>
-          <div>
-              {this.props.isLoggedIn ? (
-                  <div>
-                  <Home />
-                  </div>
-              ) : (
-                  <div>
-                     <h3>Welcome, Guest</h3> 
-                  </div>
-              )}
-          </div>
+        <div>
+          {this.props.isLoggedIn ? (
+            <div>
+              <Home />
+            </div>
+          ) : (
+            <div>
+              <h3>Welcome, Guest</h3>
+            </div>
+          )}
+        </div>
         {this.props.cards.map((card) => {
           return (
             <div key={card.id}>
