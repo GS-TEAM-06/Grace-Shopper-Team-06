@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import { fetchCard } from "../store/card";
 import { addedToCart } from "../store/cart";
 import axios from "axios";
+import UpdateCard from "./UpdateCard";
 
 class Card extends Component {
   constructor(props) {
@@ -18,7 +19,14 @@ class Card extends Component {
   async addToGuestCart(cardId) {
     const { data } = await axios.get(`/api/cards/${cardId}`);
     let guestCart = JSON.parse(localStorage.getItem("guestCart"));
-    guestCart.push(data);
+    let guestCartId = guestCart.map((card) => card.id)
+    let index = guestCartId.indexOf(data.id)
+    if (index === -1) {
+        data.quantity = 1
+        guestCart.push(data);
+    } else {
+        guestCart[index].quantity += 1
+    }
     localStorage.guestCart = JSON.stringify(guestCart);
   }
 

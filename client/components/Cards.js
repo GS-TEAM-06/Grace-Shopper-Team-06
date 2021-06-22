@@ -6,13 +6,14 @@ import { deleteCardThunk } from "../store/card";
 import { Link } from "react-router-dom";
 import Home from "./Home";
 import axios from "axios";
+import CreateCard from "./CreateCard";
 
 class Cards extends Component {
   constructor(props) {
     super(props);
 
     this.handleClick = this.handleClick.bind(this);
-    this.handleSubmit = this.createCardClick(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   componentDidMount() {
@@ -22,7 +23,14 @@ class Cards extends Component {
   async addToGuestCart(cardId) {
     const { data } = await axios.get(`/api/cards/${cardId}`);
     let guestCart = JSON.parse(localStorage.getItem("guestCart"));
-    guestCart.push(data);
+    let guestCartId = guestCart.map((card) => card.id)
+    let index = guestCartId.indexOf(data.id)
+    if (index === -1) {
+        data.quantity = 1
+        guestCart.push(data);
+    } else {
+        guestCart[index].quantity += 1
+    }
     localStorage.guestCart = JSON.stringify(guestCart);
   }
 

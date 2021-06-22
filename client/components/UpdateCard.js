@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { updateCardThunk } from "../store/card";
 import { connect } from "react-redux";
+import { Link } from "react-router-dom";
 
 class UpdateCard extends Component {
   constructor() {
