@@ -72,15 +72,24 @@ class Cart extends Component {
                 <p>Price: {'$' + (objectItem.price / 100).toFixed(2)}</p>
                 <p>Quantity: {objectItem.quantity}</p>
 
-                <button value={objectItem.cardId} onClick={this.handleAdd}>
+                <button
+                  value={objectItem.cardId}
+                  onClick={this.handleAdd}
+                  disabled={this.props.cartStatus === 'LOADING'}
+                >
                   +
                 </button>
-                <button value={objectItem.cardId} onClick={this.handleSubtract}>
+                <button
+                  value={objectItem.cardId}
+                  onClick={this.handleSubtract}
+                  disabled={this.props.cartStatus === 'LOADING'}
+                >
                   -
                 </button>
                 <button
                   value={objectItem.cardId}
                   onClick={this.handleRemoveFromCart}
+                  disabled={this.props.cartStatus === 'LOADING'}
                 >
                   Remove
                 </button>
@@ -91,7 +100,12 @@ class Cart extends Component {
 
         <div>
           <p>
-            <button onClick={this.clearCart}>Clear Cart</button>
+            <button
+              onClick={this.clearCart}
+              disabled={this.props.cartStatus === 'LOADING'}
+            >
+              Clear Cart
+            </button>
           </p>
         </div>
       </div>
@@ -117,6 +131,7 @@ const mapState = (state) => {
   return {
     cart: state.cart,
     user: state.auth,
+    cartStatus: state.cartStatus,
   };
 };
 

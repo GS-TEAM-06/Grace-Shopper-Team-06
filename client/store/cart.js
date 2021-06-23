@@ -1,5 +1,7 @@
 import axios from 'axios';
 
+import { setLoading } from './cartStatus';
+
 //action type
 const ADD_TO_CART = 'ADD_TO_CART';
 const GET_CART = 'GET_CART';
@@ -39,6 +41,7 @@ const removeFromCart = (cart) => {
 export const addedToCart = (userId, cardId, quantity) => {
   return async (dispatch) => {
     try {
+      dispatch(setLoading('LOADING'));
       const { data } = await axios.put(
         `/api/users/${userId}/cart`,
         {
@@ -51,6 +54,7 @@ export const addedToCart = (userId, cardId, quantity) => {
       );
       console.log('ATC Thunk->', data);
       dispatch(addToCart(data));
+      dispatch(setLoading('OK'));
     } catch (error) {
       console.log(error);
     }
@@ -60,11 +64,13 @@ export const addedToCart = (userId, cardId, quantity) => {
 export const fetchCart = (userId) => {
   return async (dispatch) => {
     try {
-      console.log("userId in fetchCardThunk -->", userId);
+      dispatch(setLoading('LOADING'));
+      console.log('userId in fetchCardThunk -->', userId);
       const { data } = await axios.get(`/api/users/${userId}/cart`, {
         headers: { token: window.localStorage.token },
       });
       dispatch(getCart(data));
+      dispatch(setLoading('OK'));
     } catch (error) {
       console.error(error);
     }
@@ -74,6 +80,8 @@ export const fetchCart = (userId) => {
 export const decreasedFromCart = (userId, cardId) => {
   return async (dispatch) => {
     try {
+      dispatch(setLoading('LOADING'));
+
       console.log('Does this removeThunk work?');
       const { data } = await axios.put(
         `/api/users/${userId}/cart/decrement`,
@@ -86,6 +94,7 @@ export const decreasedFromCart = (userId, cardId) => {
       );
       console.log('Remove thunk data->', data);
       dispatch(decreaseFromCart(data));
+      dispatch(setLoading('OK'));
     } catch (error) {
       console.log(error);
     }
@@ -95,6 +104,8 @@ export const decreasedFromCart = (userId, cardId) => {
 export const removedFromCart = (userId, cardId) => {
   return async (dispatch) => {
     try {
+      dispatch(setLoading('LOADING'));
+
       console.log('Does this removeThunk work?');
       const { data } = await axios.delete(`/api/users/${userId}/cart`, {
         data: { cardId },
@@ -102,6 +113,7 @@ export const removedFromCart = (userId, cardId) => {
       });
       console.log('Remove thunk data->', data);
       dispatch(removeFromCart(data));
+      dispatch(setLoading('OK'));
     } catch (error) {
       console.log(error);
     }

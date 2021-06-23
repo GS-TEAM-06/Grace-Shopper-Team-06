@@ -16,33 +16,12 @@ const useStyles = makeStyles((theme) => ({
 const Navbar = (props) => {
   const classes = useStyles(props);
 
-  // <div>
-  //   <h1>FS-App-Template</h1>
-  //   <nav>
-  //     {isLoggedIn ? (
-  //       <div>
-  //         {/* The navbar will show these links after you log in */}
-  //         <Link to="/home">Home</Link>
-  //         <a href="#" onClick={handleClick}>
-  //           Logout
-  //         </a>
-  //       </div>
-  //     ) : (
-  //       <div>
-  //         {/* The navbar will show these links before you log in */}
-  //         <Link to="/login">Login</Link>
-  //         <Link to="/signup">Sign Up</Link>
-  //       </div>
-  //     )}
-  //   </nav>
-  //   <hr />
-  // </div>
   return (
     <>
       <AppBar className={classes.header}>
         <Toolbar>
           <Link to="/">
-            <img src="favicon.ico" height="70" width="auto" />
+            <img src="/favicon.ico" height="70" width="auto" />
           </Link>
           <Typography variant="h4">
             <Link to="/">Grace Shopper Team 6 </Link>

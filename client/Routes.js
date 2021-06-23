@@ -1,20 +1,20 @@
-import React, { Component, Fragment } from "react";
-import { connect } from "react-redux";
-import { withRouter, Route, Switch, Redirect } from "react-router-dom";
-import { Login, Signup } from "./components/AuthForm";
-import Home from "./components/Home";
-import { me } from "./store";
-import Cards from "./components/Cards";
-import Card from "./components/Card";
-import Cart from "./components/Cart";
-import User from "./components/User";
-import GuestCart from "./components/GuestCart";
-import Checkout from "./components/Checkout";
+import React, { Component, Fragment } from 'react';
+import { connect } from 'react-redux';
+import { withRouter, Route, Switch, Redirect } from 'react-router-dom';
+import { Login, Signup } from './components/AuthForm';
+import Home from './components/Home';
+import { me } from './store';
+import Cards from './components/Cards';
+import Card from './components/Card';
+import Cart from './components/Cart';
+import User from './components/User';
+import GuestCart from './components/GuestCart';
+import Checkout from './components/Checkout';
 
 function createGuestCart() {
   const guestCart = [];
-  if (!JSON.parse(localStorage.getItem("guestCart"))) {
-    localStorage.setItem("guestCart", JSON.stringify(guestCart));
+  if (!JSON.parse(localStorage.getItem('guestCart'))) {
+    localStorage.setItem('guestCart', JSON.stringify(guestCart));
   }
 }
 
@@ -32,6 +32,7 @@ class Routes extends Component {
     // create guestCart in local storage when opening browser
     createGuestCart();
 
+    console.log('IN routes, this.props.userId: ', this.props.userId);
     return (
       <div>
         {isLoggedIn ? (
@@ -52,7 +53,12 @@ class Routes extends Component {
               render={(props) => <Cart {...props} userId={this.props.userId} />}
             />
             <Route path="/cards/:id" component={Card} />
-            <Route path="/checkout" component={Checkout} />
+            <Route
+              path="/checkout"
+              render={(props) => (
+                <Checkout {...props} userId={this.props.userId} />
+              )}
+            />
             <Redirect to="/" />
           </Switch>
         ) : (

@@ -9,6 +9,10 @@ if (process.env.NODE_ENV !== 'test') {
   app.use(morgan('dev'));
 }
 
+app.use((req, res, next) => {
+  setTimeout(next, Math.floor(Math.random() * 2000 + 100));
+});
+
 // body parsing middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

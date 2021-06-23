@@ -23,28 +23,33 @@ class Cards extends Component {
     this.props.fetchCards(this.state.category);
   }
 
-  async addToGuestCart(cardId) {
+  async addToGuestCart(cardId, cardQty) {
+    if (!cardQty) {
+      cardQty = 1;
+    }
+    cardQty = Number(cardQty);
     const { data } = await axios.get(`/api/cards/${cardId}`);
     let guestCart = JSON.parse(localStorage.getItem('guestCart'));
     let guestCartId = guestCart.map((card) => card.id);
     let index = guestCartId.indexOf(data.id);
     if (index === -1) {
-      data.quantity = 1;
+      data.quantity = cardQty;
       guestCart.push(data);
     } else {
-      guestCart[index].quantity += 1;
+      guestCart[index].quantity = Number(guestCart[index].quantity) + cardQty;
     }
     localStorage.guestCart = JSON.stringify(guestCart);
   }
 
   handleClick(event) {
     event.preventDefault();
+    const cardsId = event.target.value;
+    if (this.state.addQty[cardsId] == 0) return;
     if (this.props.user.id) {
       const usersId = this.props.user.id;
-      const cardsId = event.target.value;
       this.props.addedToCart(usersId, cardsId, this.state.addQty[cardsId]);
     } else {
-      this.addToGuestCart(event.target.value);
+      this.addToGuestCart(event.target.value, this.state.addQty[cardsId]);
     }
   }
 
@@ -69,6 +74,7 @@ class Cards extends Component {
     const { isLoggedIn } = this.props;
     const { user } = this.props;
     const { cards } = this.props;
+    console.log('This.props.cartStatus: ', this.props.cartStatus);
     return (
       <div>
         <div>
@@ -112,6 +118,7 @@ class Cards extends Component {
                   type="submit"
                   value={card.id}
                   onClick={this.handleClick}
+                  disabled={this.props.cartStatus === 'LOADING'}
                 >
                   Add To Cart
                 </button>
@@ -148,6 +155,7 @@ const mapState = (state) => {
   return {
     cards: state.cards,
     user: state.auth,
+    cartStatus: state.cartStatus,
   };
 };
 

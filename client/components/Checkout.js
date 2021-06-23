@@ -1,21 +1,24 @@
-import { CardContent } from "@material-ui/core";
-import { TransferWithinAStationOutlined } from "@material-ui/icons";
-import React, { Component } from "react";
-import { connect } from "react-redux";
-import { Link } from "react-router-dom";
-import { fetchCart } from "../store/cart";
+import { CardContent } from '@material-ui/core';
+import { TransferWithinAStationOutlined } from '@material-ui/icons';
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
+import { fetchCart } from '../store/cart';
 
 class Checkout extends Component {
-  // constructor(props) {
-  //   super(props);
-  // }
+  constructor(props) {
+    super(props);
+  }
   componentDidMount() {
-    let userId = this.props.user.id;
-    console.log("this.props.user -->", this.props.user);
-    this.props.fetchCart(userId);
+    console.log('this.props.userId -->', this.props.userId);
+
+    // this.props.fetchCart(this.props.userId);
   }
 
   render() {
+    // console.log('>>>>>>>>>>>>>>>>>>this.props.user:::::');
+    // console.log('this.props.user:::::');
+    // console.log(this.props.user);
     //   const { orderItems } = this.props.cart;
     //   console.log("this is cart ->", orderItems);
     //   console.log("userId -->", this.props.user.id);

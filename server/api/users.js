@@ -164,6 +164,7 @@ router.put(
           ) {
             // did we get a quantity? Default is to add 1
             if (typeof req.body.quantity === 'undefined') {
+              console.log('Did we get in here?');
               req.body.quantity = 1;
             }
             req.body.quantity = Number(req.body.quantity);
@@ -175,6 +176,7 @@ router.put(
               ).destroy();
               updated = true;
             } else {
+              console.log('Req.body.quantity: ', req.body.quantity);
               orderItem = await (
                 await OrderItems.findByPk(plainCart.orderItems[i].id)
               ).update({
@@ -194,10 +196,14 @@ router.put(
 
         // if we get here with orderItem === false, we didn't have the card in the cart already
         if (updated === false && req.body.quantity != 0) {
-          if (typeof req.body.quantity != 'number') {
+          if (typeof req.body.quantity == 'undefined') {
             req.body.quantity = 1;
           }
           // create new OrderItem with cardId = req.body.cardId
+          console.log(
+            'About to create a new item, req.body.quantity: ',
+            req.body.quantity
+          );
           orderItem = await OrderItems.create({
             quantity: req.body.quantity,
             cardId: req.body.cardId,
