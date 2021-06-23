@@ -1,62 +1,10 @@
-<<<<<<< HEAD
 import { CardContent } from '@material-ui/core';
 import { TransferWithinAStationOutlined } from '@material-ui/icons';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { fetchCart } from '../store/cart';
-
-class Checkout extends Component {
-  constructor(props) {
-    super(props);
-  }
-  componentDidMount() {
-    console.log('this.props.userId -->', this.props.userId);
-
-    // this.props.fetchCart(this.props.userId);
-  }
-
-  render() {
-    // console.log('>>>>>>>>>>>>>>>>>>this.props.user:::::');
-    // console.log('this.props.user:::::');
-    // console.log(this.props.user);
-    //   const { orderItems } = this.props.cart;
-    //   console.log("this is cart ->", orderItems);
-    //   console.log("userId -->", this.props.user.id);
-    return (
-      // const { orderItems } = this.props.cart;
-      // orderItems.map((objectItem) => {
-      //     <div key={objectItem.card.id}>
-      //       <div>
-      //         <img src={objectItem.card.imgUrl} />
-
-      //         <Link to={`/cards/${objectItem.card.id}`}>
-      //           <p>Name: {objectItem.card.name}</p>
-      //         </Link>
-      //         <p>Description: {objectItem.card.description}</p>
-      //         <p>Price: {objectItem.card.price}</p>
-      //         <p>Quantity: {objectItem.quantity}</p>
-
-      //         <button value={objectItem.cardId} onClick={this.handleAdd}>
-      //           +
-      //         </button>
-      //         <button value={objectItem.cardId} onClick={this.handleRemove}>
-      //           -
-      //         </button>
-      //       </div>
-      //     </div>
-      //   );
-      // });
-      <div>Hello</div>
-    );
-=======
-import { CardContent } from "@material-ui/core";
-import { TransferWithinAStationOutlined } from "@material-ui/icons";
-import React, { Component } from "react";
-import { connect } from "react-redux";
-import { Link } from "react-router-dom";
-import { fetchCart } from "../store/cart";
-import { me } from "../store/auth";
+import { me } from '../store/auth';
 
 class Checkout extends Component {
   // constructor(props) {
@@ -64,15 +12,15 @@ class Checkout extends Component {
   // }
   async componentDidMount() {
     await this.props.setAuth();
-    console.log("this.props -->", this.props);
+    console.log('this.props -->', this.props);
     this.props.fetchCart(this.props.user.id);
   }
 
   render() {
     const { orderItems } = this.props.cart;
-    console.log("this is cart ->", this.props.cart);
-    console.log("userId -->", this.props.user.id);
-    if (typeof orderItems === "undefined") {
+    console.log('this is cart ->', this.props.cart);
+    console.log('userId -->', this.props.user.id);
+    if (typeof orderItems === 'undefined') {
       return <div>loading...</div>;
     } else {
       return (
@@ -90,14 +38,13 @@ class Checkout extends Component {
           })}
           <div>Payment</div>
           <h3>Order Summary</h3>
-          <div>Total: {"$" + (this.props.cart.total / 100).toFixed(2)}</div>
+          <div>Total: {'$' + (this.props.cart.total / 100).toFixed(2)}</div>
           <p>
             <button>Place your order</button>
           </p>
         </div>
       );
     }
->>>>>>> 129e61acce73007c10026611717e669f49949492
   }
 }
 
