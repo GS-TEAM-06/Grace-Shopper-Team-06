@@ -1,17 +1,16 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { fetchCards } from '../store/cards';
-import { addedToCart } from '../store/cart';
-import { deleteCardThunk } from '../store/card';
-import { Link } from 'react-router-dom';
-import Home from './Home';
-import axios from 'axios';
-import CreateCard from './CreateCard';
+import React, {Component} from "react";
+import {connect} from "react-redux";
+import {fetchCards} from "../store/cards";
+import {addedToCart} from "../store/cart";
+import {deleteCardThunk} from "../store/card";
+import {Link} from "react-router-dom";
+import Home from "./Home";
+import axios from "axios";
+import CreateCard from "./CreateCard";
 
 class Cards extends Component {
   constructor(props) {
     super(props);
-
     this.handleClick = this.handleClick.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
@@ -21,15 +20,15 @@ class Cards extends Component {
   }
 
   async addToGuestCart(cardId) {
-    const { data } = await axios.get(`/api/cards/${cardId}`);
+    const {data} = await axios.get(`/api/cards/${cardId}`);
     let guestCart = JSON.parse(localStorage.getItem("guestCart"));
-    let guestCartId = guestCart.map((card) => card.id)
-    let index = guestCartId.indexOf(data.id)
+    let guestCartId = guestCart.map((card) => card.id);
+    let index = guestCartId.indexOf(data.id);
     if (index === -1) {
-        data.quantity = 1
-        guestCart.push(data);
+      data.quantity = 1;
+      guestCart.push(data);
     } else {
-        guestCart[index].quantity += 1
+      guestCart[index].quantity += 1;
     }
     localStorage.guestCart = JSON.stringify(guestCart);
   }
@@ -51,9 +50,9 @@ class Cards extends Component {
   }
 
   render() {
-    const { isLoggedIn } = this.props;
-    const { user } = this.props;
-    const { cards } = this.props;
+    const {isLoggedIn} = this.props;
+    const {user} = this.props;
+    const {cards} = this.props;
     return (
       <div>
         <div>
@@ -112,7 +111,7 @@ const mapState = (state) => {
   };
 };
 
-const mapDispatch = (dispatch, { history }) => {
+const mapDispatch = (dispatch, {history}) => {
   return {
     addedToCart: (userId, cardId) => dispatch(addedToCart(userId, cardId)),
     fetchCards: () => dispatch(fetchCards()),

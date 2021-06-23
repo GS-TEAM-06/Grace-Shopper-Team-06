@@ -11,7 +11,7 @@ class GuestCart extends Component {
         this.fetchGuestCart = this.fetchGuestCart.bind(this)
         this.removeFromGuestCart = this.removeFromGuestCart.bind(this)
         this.clearGuestCart = this.clearGuestCart.bind(this)
-        this.addToGuestCart = this.addToGuestCart.bind(this)
+        this.addQuantity = this.addQuantity.bind(this)
         this.subtractQuantity = this.subtractQuantity.bind(this)
     }
 
@@ -20,11 +20,11 @@ class GuestCart extends Component {
         return guestCart;
     }
 
-    async addToGuestCart(evt) {
-      const { data } = await axios.get(`/api/cards/${evt.target.value}`);
+    async addQuantity(evt) {
+      // const { data } = await axios.get(`/api/cards/${evt.target.value}`);
       let guestCart = JSON.parse(localStorage.getItem("guestCart"));
       let guestCartId = guestCart.map((card) => card.id)
-      let index = guestCartId.indexOf(data.id)
+      let index = guestCartId.indexOf(Number(evt.target.value))
       if (index === -1) {
           data.quantity = 1
           guestCart.push(data);
@@ -89,31 +89,34 @@ class GuestCart extends Component {
                     <p>{card.name}</p>
                   </Link>
                   <p>{card.description}</p>
-                  <p>{card.price}</p>
+                  <p>Price: ${(card.price/100).toFixed(2)}</p>
+                  <p>Total: ${(card.price * card.quantity/100).toFixed(2)}</p>
                   <p>Quantity: {card.quantity}</p>
 
-              <button value={card.id} onClick={this.addToGuestCart}>
-                +
+              <button value={card.id} onClick={this.addQuantity}>
+                 + 
               </button>
               <button value={card.id} onClick={this.subtractQuantity}>
-                -
+                 - 
               </button>
                   <button value={card.id} onClick={this.removeFromGuestCart}>Remove</button>
             </div>
           );
         })}
+
         <div>
           <button onClick={this.clearGuestCart}>Clear Cart</button>
         </div>
       </div>
     ) : (
-      <p>Nothing</p>
+      <p>This cart is empty</p>
     );
 
     return (
       <div>
-        <h5>Your cart:</h5>
+        <h5>Guest Cart:</h5>
         <ul>{cards}</ul>
+          <h5>Total Cart Price: ${(guestCart.reduce((accum, curr) => accum + (curr.price * curr.quantity), 0)/100).toFixed(2)}</h5>
       </div>
     );
   }
