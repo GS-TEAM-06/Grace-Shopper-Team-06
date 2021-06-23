@@ -36,7 +36,12 @@ class Checkout extends Component {
               </div>
             );
           })}
-          <div>Total: ${this.props.cart.total}</div>
+          <div>Payment</div>
+          <h3>Order Summary</h3>
+          <div>Total: {"$" + (this.props.cart.total / 100).toFixed(2)}</div>
+          <p>
+            <button>Place your order</button>
+          </p>
         </div>
       );
     }
