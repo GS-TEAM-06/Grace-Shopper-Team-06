@@ -13,6 +13,17 @@ const Orders = db.define('orders', {
   },
 });
 
+// async get() {
+//   const orderItems = await this.getOrderItems({ raw: true });
+//   if (orderItems.length === 0) {
+//     return 0;
+//   } else {
+//     return orderItems.reduce((acc, orderItem) => {
+//       return (acc += orderItem.price);
+//     }, 0);
+//   }
+// },
+
 Orders.afterUpdate(async (order, options) => {
   if (
     order.dataValues.isOpen === false &&
@@ -30,4 +41,12 @@ Orders.afterUpdate(async (order, options) => {
   }
 });
 
+Orders.prototype.updateTotal = async function () {
+  const orderItems = await this.getOrderItems({ raw: true });
+  const newTotal = orderItems.reduce((acc, orderItem) => {
+    return (acc += orderItem.price);
+  }, 0);
+  // this.total = newTotal;
+  await this.update({ total: newTotal });
+};
 module.exports = Orders;
