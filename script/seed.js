@@ -133,10 +133,10 @@ const seed = async () => {
     // create an order for a user
     // create some order items for that order
     // const user = await User.findByPk(1);
-    const carts = [
-      await Orders.create({ isOpen: true, total: 0, userId: 1 }),
-      await Orders.create({ isOpen: true, total: 0, userId: 1 }),
-    ];
+    // const carts = [
+    //   await Orders.create({ isOpen: true, total: 0, userId: 1 }),
+    //   await Orders.create({ isOpen: true, total: 0, userId: 1 }),
+    // ];
     const orderItems = [
       await OrderItems.create({ quantity: 1, cardId: 1, orderId: 1 }),
       await OrderItems.create({ quantity: 2, cardId: 2, orderId: 1 }),
@@ -150,7 +150,7 @@ const seed = async () => {
     ];
 
     // random change
-    
+
     // test cart display:
     // console.log('An open cart with items:');
 
@@ -193,7 +193,7 @@ const seed = async () => {
     // await cards[0].save();
     // await cards[1].save();
 
-    return { users, cards, addresses, carts };
+    return { users, cards, addresses /*carts*/ };
   } catch (err) {
     console.log(err);
   }

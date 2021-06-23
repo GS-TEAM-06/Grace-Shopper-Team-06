@@ -48,7 +48,7 @@ class Card extends Component {
         {/* <h3>{singleCard.quantity}</h3> */}
         <img src={singleCard.imageUrl} />
         <h6>{singleCard.description}</h6>
-        <h3>{singleCard.price}</h3>
+        <h3>{'$' + (singleCard.price / 100).toFixed(2)}</h3>
         <button type="button" value={singleCard.id} onClick={this.handleClick}>
           Add To Cart
         </button>

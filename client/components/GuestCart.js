@@ -1,5 +1,5 @@
-import React, {Component} from "react";
-import {Link} from "react-router-dom";
+import React, { Component } from "react";
+import { Link } from "react-router-dom";
 import axios from "axios";
 
 class GuestCart extends Component {
@@ -15,10 +15,10 @@ class GuestCart extends Component {
         this.subtractQuantity = this.subtractQuantity.bind(this)
     }
 
-    fetchGuestCart() {
-        const guestCart = JSON.parse(localStorage.getItem("guestCart"))
-        return guestCart;
-    }
+  fetchGuestCart() {
+    const guestCart = JSON.parse(localStorage.getItem("guestCart"));
+    return guestCart;
+  }
 
     async addQuantity(evt) {
       // const { data } = await axios.get(`/api/cards/${evt.target.value}`);
@@ -37,45 +37,44 @@ class GuestCart extends Component {
       })
     }
 
-    subtractQuantity(evt) {
-      // const { data } = await axios.get(`/api/cards/${evt.target.value}`);
-      let guestCart = JSON.parse(localStorage.getItem("guestCart"));
-      let guestCartId = guestCart.map((card) => card.id)
-      let index = guestCartId.indexOf(Number(evt.target.value))
-      console.log('guestCart[index] ->', index)
-      if (guestCart[index].quantity === 1) {
-          this.removeFromGuestCart(evt)
-      } else {
-          guestCart[index].quantity -= 1
-      }
-      localStorage.guestCart = JSON.stringify(guestCart);
-      this.setState({
-        guestCart: guestCart
-      })
+  subtractQuantity(evt) {
+    // const { data } = await axios.get(`/api/cards/${evt.target.value}`);
+    let guestCart = JSON.parse(localStorage.getItem("guestCart"));
+    let guestCartId = guestCart.map((card) => card.id);
+    let index = guestCartId.indexOf(Number(evt.target.value));
+    console.log("guestCart[index] ->", index);
+    if (guestCart[index].quantity === 1) {
+      this.removeFromGuestCart(evt);
+    } else {
+      guestCart[index].quantity -= 1;
     }
+    localStorage.guestCart = JSON.stringify(guestCart);
+    this.setState({
+      guestCart: guestCart,
+    });
+  }
 
+  async removeFromGuestCart(evt) {
+    const { data: card } = await axios.get(`/api/cards/${evt.target.value}`);
+    let guestCart = JSON.parse(localStorage.getItem("guestCart"));
+    let guestCartId = guestCart.map((card) => card.id);
+    let index = guestCartId.indexOf(card.id);
+    guestCart.splice(index, 1);
+    localStorage.guestCart = JSON.stringify(guestCart);
+    this.setState({
+      guestCart: guestCart,
+    });
+  }
 
-    async removeFromGuestCart(evt) {
-        const { data: card } = await axios.get(`/api/cards/${evt.target.value}`);
-        let guestCart = JSON.parse(localStorage.getItem('guestCart'))
-        let guestCartId = guestCart.map((card) => card.id)
-        let index = guestCartId.indexOf(card.id)
-        guestCart.splice(index, 1)
-        localStorage.guestCart = JSON.stringify(guestCart)
-        this.setState({
-          guestCart: guestCart
-        })
-    }
-    
-    clearGuestCart() {
-        this.setState({
-          guestCart: []
-        })
-        localStorage.guestCart = JSON.stringify(this.state.guestCart);
-    }
+  clearGuestCart() {
+    this.setState({
+      guestCart: [],
+    });
+    localStorage.guestCart = JSON.stringify(this.state.guestCart);
+  }
 
   render() {
-    console.log("guest cart state --> ", this.state)
+    console.log("guest cart state --> ", this.state);
     let guestCart = this.fetchGuestCart();
     let cards = guestCart.length ? (
       <div>
@@ -99,7 +98,9 @@ class GuestCart extends Component {
               <button value={card.id} onClick={this.subtractQuantity}>
                  - 
               </button>
-                  <button value={card.id} onClick={this.removeFromGuestCart}>Remove</button>
+              <button value={card.id} onClick={this.removeFromGuestCart}>
+                Remove
+              </button>
             </div>
           );
         })}
