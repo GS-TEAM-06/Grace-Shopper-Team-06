@@ -8,9 +8,8 @@ import Cards from "./components/Cards";
 import Card from "./components/Card";
 import Cart from "./components/Cart";
 import User from "./components/User";
-import CreateCard from "./components/CreateCard";
-import UpdateCard from "./components/UpdateCard";
 import GuestCart from "./components/GuestCart";
+import Checkout from "./components/Checkout";
 
 function createGuestCart() {
   const guestCart = [];
@@ -53,6 +52,7 @@ class Routes extends Component {
               render={(props) => <Cart {...props} userId={this.props.userId} />}
             />
             <Route path="/cards/:id" component={Card} />
+            <Route path="/checkout" component={Checkout} />
             <Redirect to="/" />
           </Switch>
         ) : (
@@ -62,6 +62,7 @@ class Routes extends Component {
             <Route path="/login" component={Login} />
             <Route path="/signup" component={Signup} />
             <Route path="/cart" component={GuestCart} />
+            <Route path="/checkout" component={Checkout} />
           </Switch>
         )}
       </div>
@@ -73,7 +74,6 @@ class Routes extends Component {
  * CONTAINER
  */
 const mapState = (state) => {
-  console.log("this is the sate --> ", state);
   return {
     // Being 'logged in' for our purposes will be defined has having a state.auth that has a truthy id.
     // Otherwise, state.auth will be an empty object, and state.auth.id will be falsey

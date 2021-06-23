@@ -51,6 +51,7 @@ export const addedToCart = (userId, cardId) => {
 export const fetchCart = (userId) => {
   return async (dispatch) => {
     try {
+      console.log("userId in fetchCardThunk -->", userId);
       const { data } = await axios.get(`/api/users/${userId}/cart`, {
         headers: { token: window.localStorage.token },
       });

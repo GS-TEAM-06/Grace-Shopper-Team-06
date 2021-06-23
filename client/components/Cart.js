@@ -70,13 +70,16 @@ class Cart extends Component {
         );
       })
     ) : (
-      <p>Nothing</p>
+      <p>Cart is Empty</p>
     );
 
     return (
       <div>
         <h5>You have ordered:</h5>
         <ul>{items}</ul>
+        <button type="submit" className="checkout">
+          <Link to="/checkout">Checkout</Link>
+        </button>
       </div>
     );
   }
