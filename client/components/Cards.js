@@ -38,6 +38,7 @@ class Cards extends Component {
   }
 
   handleClick(event) {
+    event.preventDefault();
     if (this.props.user.id) {
       const usersId = this.props.user.id;
       const cardsId = event.target.value;
@@ -55,12 +56,12 @@ class Cards extends Component {
   }
 
   categoryChange(event) {
+    event.preventDefault();
     this.setState({ category: event.target.value });
     this.props.fetchCards(event.target.value);
   }
 
   handleQtyChange(event, cardId) {
-    event.preventDefault;
     this.setState({ addQty: { ...{ [cardId]: event.target.value } } });
   }
 

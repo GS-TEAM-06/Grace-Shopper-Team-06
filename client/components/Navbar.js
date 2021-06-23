@@ -41,7 +41,9 @@ const Navbar = (props) => {
     <>
       <AppBar className={classes.header}>
         <Toolbar>
-          <img src="favicon.ico" height="70" width="auto" />
+          <Link to="/">
+            <img src="favicon.ico" height="70" width="auto" />
+          </Link>
           <Typography variant="h4">
             <Link to="/">Grace Shopper Team 6 </Link>
           </Typography>
