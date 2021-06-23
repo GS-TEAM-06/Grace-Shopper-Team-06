@@ -2,16 +2,20 @@ import { CardContent } from "@material-ui/core";
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
-import { fetchCart, removedFromCart, addedToCart } from "../store/cart";
+import {
+  fetchCart,
+  decreasedFromCart,
+  addedToCart,
+  removedFromCart,
+} from "../store/cart";
 
 class Cart extends Component {
   constructor() {
     super();
-    // this.handleDecreaseQuantity = this.handleDecreaseQuantity.bind(this);
-    // this.handleIncreaseQuantity = this.handleIncreaseQuantity.bind(this);
+    this.state = {};
     this.handleSubtract = this.handleSubtract.bind(this);
     this.handleAdd = this.handleAdd.bind(this);
-    this.removeFromCart = this.removeFromCart.bind(this);
+    this.handleRemoveFromCart = this.handleRemoveFromCart.bind(this);
     this.clearCart = this.clearCart.bind(this);
   }
 
@@ -25,7 +29,7 @@ class Cart extends Component {
     const userId = this.props.user.id;
     const cardId = event.target.value;
     console.log("cardId->", cardId);
-    this.props.removedFromCart(userId, cardId);
+    this.props.decreasedFromCart(userId, cardId);
   }
 
   handleAdd(event) {
@@ -35,12 +39,10 @@ class Cart extends Component {
     this.props.addedToCart(userId, cardId);
   }
 
-  removeFromCart(event) {
+  handleRemoveFromCart(event) {
     const userId = this.props.user.id;
-    const cardId = event.target.value.cardId;
-    event.target.value.quantity === 0;
-    console.log("cardId->", cardId);
-    this.props.addedToCart(userId, cardId);
+    const cardId = event.target.value;
+    this.props.removedFromCart(userId, cardId);
   }
 
   clearCart() {
@@ -76,7 +78,10 @@ class Cart extends Component {
                 <button value={objectItem.cardId} onClick={this.handleSubtract}>
                   -
                 </button>
-                <button value={objectItem.cardId} onClick={this.removeFromCart}>
+                <button
+                  value={objectItem.cardId}
+                  onClick={this.handleRemoveFromCart}
+                >
                   Remove
                 </button>
               </div>
@@ -104,6 +109,7 @@ class Cart extends Component {
 }
 
 const mapState = (state) => {
+  console.log("state->", state);
   return {
     cart: state.cart,
     user: state.auth,
@@ -113,16 +119,11 @@ const mapState = (state) => {
 const mapDispatch = (dispatch) => {
   return {
     fetchCart: (userId) => dispatch(fetchCart(userId)),
+    decreasedFromCart: (userId, cardId) =>
+      dispatch(decreasedFromCart(userId, cardId)),
+    addedToCart: (userId, cardId) => dispatch(addedToCart(userId, cardId)),
     removedFromCart: (userId, cardId) =>
       dispatch(removedFromCart(userId, cardId)),
-    addedToCart: (userId, cardId) => dispatch(addedToCart(userId, cardId)),
-
-    // addedQuantity: (cardId) => {
-    //   dispatch(addedQty(cardId));
-    // },
-    // subtractedQty: (cardId) => {
-    //   dispatch(subtractedQty(cardId));
-    // },
   };
 };
 
