@@ -1,6 +1,6 @@
-import React, {Component} from "react";
-import {Link} from "react-router-dom";
-import axios from "axios";
+import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
+import axios from 'axios';
 
 class GuestCart extends Component {
   constructor() {
@@ -16,13 +16,13 @@ class GuestCart extends Component {
   }
 
   fetchGuestCart() {
-    const guestCart = JSON.parse(localStorage.getItem("guestCart"));
+    const guestCart = JSON.parse(localStorage.getItem('guestCart'));
     return guestCart;
   }
 
   async addQuantity(evt) {
     // const { data } = await axios.get(`/api/cards/${evt.target.value}`);
-    let guestCart = JSON.parse(localStorage.getItem("guestCart"));
+    let guestCart = JSON.parse(localStorage.getItem('guestCart'));
     let guestCartId = guestCart.map((card) => card.id);
     let index = guestCartId.indexOf(Number(evt.target.value));
     if (index === -1) {
@@ -39,10 +39,10 @@ class GuestCart extends Component {
 
   subtractQuantity(evt) {
     // const { data } = await axios.get(`/api/cards/${evt.target.value}`);
-    let guestCart = JSON.parse(localStorage.getItem("guestCart"));
+    let guestCart = JSON.parse(localStorage.getItem('guestCart'));
     let guestCartId = guestCart.map((card) => card.id);
     let index = guestCartId.indexOf(Number(evt.target.value));
-    console.log("guestCart[index] ->", index);
+    console.log('guestCart[index] ->', index);
     if (guestCart[index].quantity === 1) {
       this.removeFromGuestCart(evt);
     } else {
@@ -55,8 +55,8 @@ class GuestCart extends Component {
   }
 
   async removeFromGuestCart(evt) {
-    const {data: card} = await axios.get(`/api/cards/${evt.target.value}`);
-    let guestCart = JSON.parse(localStorage.getItem("guestCart"));
+    const { data: card } = await axios.get(`/api/cards/${evt.target.value}`);
+    let guestCart = JSON.parse(localStorage.getItem('guestCart'));
     let guestCartId = guestCart.map((card) => card.id);
     let index = guestCartId.indexOf(card.id);
     guestCart.splice(index, 1);
@@ -74,7 +74,7 @@ class GuestCart extends Component {
   }
 
   render() {
-    console.log("guest cart state --> ", this.state);
+    console.log('guest cart state --> ', this.state);
     let guestCart = this.fetchGuestCart();
     let cards = guestCart.length ? (
       <div>
@@ -123,6 +123,9 @@ class GuestCart extends Component {
             ) / 100
           ).toFixed(2)}
         </h5>
+        <button>
+          <Link to={'/checkout'}>Checkout</Link>
+        </button>
       </div>
     );
   }

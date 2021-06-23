@@ -44,6 +44,14 @@ class Card extends Component {
     const { singleCard, user } = this.props;
     return (
       <div>
+        {user.admin ? (
+          <div>
+            <h3>UPDATE CARD INFORMATION</h3>
+            <UpdateCard history={this.props.history} />
+          </div>
+        ) : (
+          <div />
+        )}
         <h3>{singleCard.name}</h3>
         {/* <h3>{singleCard.quantity}</h3> */}
         <img src={singleCard.imageUrl} />
@@ -52,14 +60,6 @@ class Card extends Component {
         <button type="button" value={singleCard.id} onClick={this.handleClick}>
           Add To Cart
         </button>
-        {user.admin ? (
-          <div>
-            <h1>UPDATE CARD INFORMATION</h1>
-            <UpdateCard history={this.props.history} />
-          </div>
-        ) : (
-          <div />
-        )}
       </div>
     );
   }

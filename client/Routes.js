@@ -1,21 +1,21 @@
-import React, { Component, Fragment } from "react";
-import { connect } from "react-redux";
-import { withRouter, Route, Switch, Redirect } from "react-router-dom";
-import { Login, Signup } from "./components/AuthForm";
-import Home from "./components/Home";
-import { me } from "./store";
-import Cards from "./components/Cards";
-import Card from "./components/Card";
-import Cart from "./components/Cart";
-import User from "./components/User";
-import CreateCard from "./components/CreateCard";
-import UpdateCard from "./components/UpdateCard";
-import GuestCart from "./components/GuestCart";
+import React, { Component, Fragment } from 'react';
+import { connect } from 'react-redux';
+import { withRouter, Route, Switch, Redirect } from 'react-router-dom';
+import { Login, Signup } from './components/AuthForm';
+import Home from './components/Home';
+import { me } from './store';
+import Cards from './components/Cards';
+import Card from './components/Card';
+import Cart from './components/Cart';
+import User from './components/User';
+import GuestCart from './components/GuestCart';
+import Checkout from './components/Checkout';
+import GuestCheckout from './components/GuestCheckout';
 
 function createGuestCart() {
   const guestCart = [];
-  if (!JSON.parse(localStorage.getItem("guestCart"))) {
-    localStorage.setItem("guestCart", JSON.stringify(guestCart));
+  if (!JSON.parse(localStorage.getItem('guestCart'))) {
+    localStorage.setItem('guestCart', JSON.stringify(guestCart));
   }
 }
 
@@ -33,6 +33,7 @@ class Routes extends Component {
     // create guestCart in local storage when opening browser
     createGuestCart();
 
+    console.log('IN routes, this.props.userId: ', this.props.userId);
     return (
       <div>
         {isLoggedIn ? (
@@ -53,6 +54,12 @@ class Routes extends Component {
               render={(props) => <Cart {...props} userId={this.props.userId} />}
             />
             <Route path="/cards/:id" component={Card} />
+            <Route
+              path="/checkout"
+              render={(props) => (
+                <Checkout {...props} userId={this.props.userId} />
+              )}
+            />
             <Redirect to="/" />
           </Switch>
         ) : (
@@ -62,6 +69,7 @@ class Routes extends Component {
             <Route path="/login" component={Login} />
             <Route path="/signup" component={Signup} />
             <Route path="/cart" component={GuestCart} />
+            <Route path="/checkout" component={GuestCheckout} />
           </Switch>
         )}
       </div>
