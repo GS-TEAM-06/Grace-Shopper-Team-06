@@ -4,47 +4,42 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import { fetchCart } from "../store/cart";
+import { me } from "../store/auth";
 
 class Checkout extends Component {
   // constructor(props) {
   //   super(props);
   // }
-  componentDidMount() {
-    let userId = this.props.user.id;
-    console.log("this.props.user -->", this.props.user);
-    this.props.fetchCart(userId);
+  async componentDidMount() {
+    await this.props.setAuth();
+    console.log("this.props -->", this.props);
+    this.props.fetchCart(this.props.user.id);
   }
 
   render() {
-    //   const { orderItems } = this.props.cart;
-    //   console.log("this is cart ->", orderItems);
-    //   console.log("userId -->", this.props.user.id);
-    return (
-      // const { orderItems } = this.props.cart;
-      // orderItems.map((objectItem) => {
-      //     <div key={objectItem.card.id}>
-      //       <div>
-      //         <img src={objectItem.card.imgUrl} />
-
-      //         <Link to={`/cards/${objectItem.card.id}`}>
-      //           <p>Name: {objectItem.card.name}</p>
-      //         </Link>
-      //         <p>Description: {objectItem.card.description}</p>
-      //         <p>Price: {objectItem.card.price}</p>
-      //         <p>Quantity: {objectItem.quantity}</p>
-
-      //         <button value={objectItem.cardId} onClick={this.handleAdd}>
-      //           +
-      //         </button>
-      //         <button value={objectItem.cardId} onClick={this.handleRemove}>
-      //           -
-      //         </button>
-      //       </div>
-      //     </div>
-      //   );
-      // });
-      <div>Hello</div>
-    );
+    const { orderItems } = this.props.cart;
+    console.log("this is cart ->", this.props.cart);
+    console.log("userId -->", this.props.user.id);
+    if (typeof orderItems === "undefined") {
+      return <div>loading...</div>;
+    } else {
+      return (
+        <div>
+          {orderItems.map((objectItem) => {
+            return (
+              <div key={objectItem.card.id}>
+                <img src={objectItem.card.imgUrl} />
+                <Link to={`/cards/${objectItem.card.id}`}>
+                  <p>Name: {objectItem.card.name}</p>
+                </Link>
+                <p>Quantity: {objectItem.quantity}</p>
+              </div>
+            );
+          })}
+          <div>Total: ${this.props.cart.total}</div>
+        </div>
+      );
+    }
   }
 }
 
@@ -58,6 +53,7 @@ const mapState = (state) => {
 const mapDispatch = (dispatch) => {
   return {
     fetchCart: (userId) => dispatch(fetchCart(userId)),
+    setAuth: () => dispatch(me()),
   };
 };
 
