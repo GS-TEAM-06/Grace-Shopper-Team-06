@@ -70,7 +70,7 @@ class GuestCart extends Component {
     this.setState({
       guestCart: [],
     });
-    localStorage.guestCart = JSON.stringify(this.state.guestCart);
+    localStorage.guestCart = JSON.stringify([]);
   }
 
   render() {
@@ -93,10 +93,10 @@ class GuestCart extends Component {
                   <p>Quantity: {card.quantity}</p>
 
               <button value={card.id} onClick={this.addQuantity}>
-                 + 
+                 +
               </button>
               <button value={card.id} onClick={this.subtractQuantity}>
-                 - 
+                 -
               </button>
               <button value={card.id} onClick={this.removeFromGuestCart}>
                 Remove
