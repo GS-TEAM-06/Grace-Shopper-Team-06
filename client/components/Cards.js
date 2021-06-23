@@ -24,7 +24,7 @@ class Cards extends Component {
   }
 
   async addToGuestCart(cardId) {
-    const { data } = await axios.get(`/api/cards/${cardId}`);
+    const {data} = await axios.get(`/api/cards/${cardId}`);
     let guestCart = JSON.parse(localStorage.getItem("guestCart"));
     let guestCartId = guestCart.map((card) => card.id);
     let index = guestCartId.indexOf(data.id);
@@ -59,9 +59,9 @@ class Cards extends Component {
   }
 
   render() {
-    const { isLoggedIn } = this.props;
-    const { user } = this.props;
-    const { cards } = this.props;
+    const {isLoggedIn} = this.props;
+    const {user} = this.props;
+    const {cards} = this.props;
     return (
       <div>
         <div>
@@ -75,14 +75,12 @@ class Cards extends Component {
             </div>
           )}
         </div>
-        <label for="category">
           <select name="category" id="category" onChange={this.categoryChange}>
             <option value="all">All categories</option>
             <option value="Magic: The Gathering">Magic: The Gathering</option>
             <option value="Pokemon">Pokemon</option>
             <option value="Yu-Gi-Oh!">Yu-Gi-Oh!</option>
           </select>
-        </label>
         {cards.map((card) => {
           return (
             <div key={card.id}>
@@ -128,7 +126,7 @@ const mapState = (state) => {
   };
 };
 
-const mapDispatch = (dispatch, { history }) => {
+const mapDispatch = (dispatch, {history}) => {
   return {
     addedToCart: (userId, cardId) => dispatch(addedToCart(userId, cardId)),
     fetchCards: (category) => dispatch(fetchCards(category)),
