@@ -87,7 +87,7 @@ router.get(
       const cart = await Orders.findOne({
         include: [{ model: OrderItems, include: [Cards] }],
         where: { userId: req.params.userId, isOpen: true },
-        order: [['updatedAt', 'DESC']],
+        order: [['createdAt', 'DESC']],
       });
       if (cart === null) {
         const error = new Error('Not found!');
