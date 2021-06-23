@@ -7,6 +7,7 @@ import {
   decreasedFromCart,
   addedToCart,
   removedFromCart,
+  clearedCart,
 } from '../store/cart';
 
 class Cart extends Component {
@@ -16,11 +17,10 @@ class Cart extends Component {
     this.handleSubtract = this.handleSubtract.bind(this);
     this.handleAdd = this.handleAdd.bind(this);
     this.handleRemoveFromCart = this.handleRemoveFromCart.bind(this);
-    this.clearCart = this.clearCart.bind(this);
+    this.handleClearCart = this.handleClearCart.bind(this);
   }
 
   componentDidMount() {
-    console.log('mounting userID->', this.props);
     let userId = this.props.user.id;
     this.props.fetchCart(userId);
   }
@@ -28,14 +28,12 @@ class Cart extends Component {
   handleSubtract(event) {
     const userId = this.props.user.id;
     const cardId = event.target.value;
-    console.log('cardId->', cardId);
     this.props.decreasedFromCart(userId, cardId);
   }
 
   handleAdd(event) {
     const userId = this.props.user.id;
     const cardId = event.target.value;
-    console.log('cardId->', cardId);
     this.props.addedToCart(userId, cardId);
   }
 
@@ -45,21 +43,18 @@ class Cart extends Component {
     this.props.removedFromCart(userId, cardId);
   }
 
-  clearCart() {
-    console.log('this.props.cart->', this.props.cart);
-    let userId = this.props.user.id;
-    this.props.cart.orderItems = [];
-    this.props.fetchCart(userId);
+  handleClearCart() {
+    const userId = this.props.user.id;
+    this.props.clearedCart(userId);
   }
 
   render() {
     const { orderItems, total } = this.props.cart;
     const hasOrderItems = orderItems && orderItems.length;
-    // console.log("order items?->", orderItems);
     let items = hasOrderItems ? (
       <div>
         {orderItems.map((objectItem) => {
-          // console.log("objectItem qty ->", objectItem);
+          console.log('What is objectItem--->', objectItem);
           return (
             <div key={objectItem.card.id}>
               <div>
@@ -69,7 +64,14 @@ class Cart extends Component {
                   <p>Name: {objectItem.card.name}</p>
                 </Link>
                 <p>Description: {objectItem.card.description}</p>
-                <p>Price: {'$' + (objectItem.price / 100).toFixed(2)}</p>
+                <p>Price: {'$' + (objectItem.card.price / 100).toFixed(2)}</p>
+                <p>
+                  Total: $
+                  {(
+                    (objectItem.card.price * objectItem.quantity) /
+                    100
+                  ).toFixed(2)}
+                </p>
                 <p>Quantity: {objectItem.quantity}</p>
 
                 <button
@@ -101,7 +103,7 @@ class Cart extends Component {
         <div>
           <p>
             <button
-              onClick={this.clearCart}
+              onClick={this.handleClearCart}
               disabled={this.props.cartStatus === 'LOADING'}
             >
               Clear Cart
@@ -110,17 +112,17 @@ class Cart extends Component {
         </div>
       </div>
     ) : (
-      <p>Cart is Empty</p>
+      <p>This cart is empty</p>
     );
 
     return (
       <div>
-        <h5>You have ordered:</h5>
+        <h5>Cart:</h5>
         <ul>{items}</ul>
-        <h5>Total: {'$' + (total / 100).toFixed(2)}</h5>
         <button type="submit" className="checkout">
           <Link to="/checkout">Checkout</Link>
         </button>
+        <h5>Total: {'$' + (total / 100).toFixed(2)}</h5>
       </div>
     );
   }
@@ -143,6 +145,7 @@ const mapDispatch = (dispatch) => {
     addedToCart: (userId, cardId) => dispatch(addedToCart(userId, cardId)),
     removedFromCart: (userId, cardId) =>
       dispatch(removedFromCart(userId, cardId)),
+    clearedCart: (userId) => dispatch(clearedCart(userId)),
   };
 };
 

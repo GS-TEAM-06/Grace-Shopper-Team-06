@@ -104,15 +104,6 @@ router.get(
   }
 );
 
-// //ADD ITEM TO CART
-// router.post('/', isAuthenticated, isSameUser, async (req, res, next) => {
-//   try {
-//     const singleItem = await OrderItems.create(req.body);
-//     res.json(singleItem);
-//   } catch (error) {
-//     next(error);
-//   }
-// });
 
 //UPDATE ITEM IN CART: cardId, works with BOTH increment and quantity provided in body methods
 router.put(
@@ -332,7 +323,6 @@ router.delete(
   isAuthenticated,
   isSameUser,
   async (req, res, next) => {
-    console.log('Am I in the delete route?');
     try {
       // find the cart instance that matches this user's id
       let cart = await Orders.findOne({
@@ -349,10 +339,7 @@ router.delete(
         error.status = 404;
         next(error);
       }
-      // console.log("plainCart->", plainCart.orderItems[2].quantity);
       // walk through the orderItems in this cart
-      // if the card quantity is greater than one, decrement the quantity
-      // console.log("What is req.body.caardId--->,", req.body.cardId);
       for (let i = 0; i < plainCart.orderItems.length; i++) {
         if (
           Number(plainCart.orderItems[i].cardId) === Number(req.body.cardId)
@@ -361,7 +348,6 @@ router.delete(
             plainCart.orderItems[i].id
           );
           await orderItem.destroy();
-          // res.json(orderItem);
         }
       }
 
@@ -369,6 +355,7 @@ router.delete(
       cart = await Orders.findOne({
         include: [{ model: OrderItems, include: [Cards] }],
         where: { userId: req.params.userId, isOpen: true },
+        order: [['updatedAt', 'DESC']],
       });
       // update the cart total
       await cart.updateTotal();
@@ -378,5 +365,49 @@ router.delete(
     }
   }
 );
+
+//REMOVE ITEMS FROM CART
+router.delete(
+  '/:userId/cart/clear',
+  isAuthenticated,
+  isSameUser,
+  async (req, res, next) => {
+    try {
+      // find the cart instance that matches this user's id
+      let cart = await Orders.findOne({
+        include: [{ model: OrderItems, include: [Cards] }],
+        where: { userId: req.params.userId, isOpen: true },
+      });
+
+      // get a plain object for the cart instance dataValues
+      let plainCart = cart.get({ plain: true });
+
+      // check to make sure we found a cart
+      if (cart === null) {
+        const error = new Error('Cart not found!');
+        error.status = 404;
+        next(error);
+      }
+          const orderItem = await OrderItems.findAll({
+            where: {orderId: plainCart.id}}
+          );
+          await Promise.all(orderItem.map(item => item.destroy()))
+
+
+      // get a fresh instance of the cart
+      cart = await Orders.findOne({
+        include: [{ model: OrderItems, include: [Cards] }],
+        where: { userId: req.params.userId, isOpen: true },
+        order: [['updatedAt', 'DESC']],
+      });
+      // update the cart total
+      await cart.updateTotal();
+      res.json(cart);
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
 
 module.exports = router;

@@ -7,6 +7,7 @@ const ADD_TO_CART = 'ADD_TO_CART';
 const GET_CART = 'GET_CART';
 const DECREASE_FROM_CART = 'DECREASE_FROM_CART';
 const REMOVE_FROM_CART = 'REMOVE_FROM_CART';
+const CLEAR_CART = 'CLEAR_CART';
 
 //action creator
 const addToCart = (cart) => {
@@ -37,6 +38,13 @@ const removeFromCart = (cart) => {
   };
 };
 
+const clearCart = (cart) => {
+  return {
+    type: CLEAR_CART,
+    cart,
+  };
+};
+
 //thunk
 export const addedToCart = (userId, cardId, quantity) => {
   return async (dispatch) => {
@@ -52,7 +60,7 @@ export const addedToCart = (userId, cardId, quantity) => {
           headers: { token: window.localStorage.token },
         }
       );
-      console.log('ATC Thunk->', data);
+
       dispatch(addToCart(data));
       dispatch(setLoading('OK'));
     } catch (error) {
@@ -92,7 +100,6 @@ export const decreasedFromCart = (userId, cardId) => {
           headers: { token: window.localStorage.token },
         }
       );
-      console.log('Remove thunk data->', data);
       dispatch(decreaseFromCart(data));
       dispatch(setLoading('OK'));
     } catch (error) {
@@ -111,9 +118,23 @@ export const removedFromCart = (userId, cardId) => {
         data: { cardId },
         headers: { token: window.localStorage.token },
       });
-      console.log('Remove thunk data->', data);
+
       dispatch(removeFromCart(data));
       dispatch(setLoading('OK'));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+};
+
+export const clearedCart = (userId) => {
+  return async (dispatch) => {
+    try {
+      const { data } = await axios.delete(`/api/users/${userId}/cart/clear`, {
+        headers: { token: window.localStorage.token },
+      });
+
+      dispatch(clearCart(data));
     } catch (error) {
       console.log(error);
     }
@@ -130,6 +151,8 @@ export default function cartReducer(state = {}, action) {
     case DECREASE_FROM_CART:
       return action.cart;
     case REMOVE_FROM_CART:
+      return action.cart;
+    case CLEAR_CART:
       return action.cart;
     default:
       return state;
