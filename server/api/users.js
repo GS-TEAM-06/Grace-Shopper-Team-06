@@ -121,7 +121,7 @@ router.put(
   isSameUser,
   async (req, res, next) => {
     try {
-      // console.log('api reqbody->', req.body);
+      console.log('api reqbody->', req.body);
       // find the cart instance that matches this user's id
       let cart = await Orders.findOne({
         include: [{ model: OrderItems, include: [Cards] }],
@@ -164,11 +164,12 @@ router.put(
           ) {
             // did we get a quantity? Default is to add 1
             if (typeof req.body.quantity === 'undefined') {
-              req.body.quantity = plainCart.orderItems[i].quantity + 1;
+              req.body.quantity = 1;
             }
             req.body.quantity = Number(req.body.quantity);
+            // req.body.quantity = Number(req.body.quantity);
             // if quantity is 0 we need to actually delete the line
-            if (req.body.quantity === 0) {
+            if (req.body.quantity == 0) {
               orderItem = await (
                 await OrderItems.findByPk(plainCart.orderItems[i].id)
               ).destroy();
@@ -177,7 +178,7 @@ router.put(
               orderItem = await (
                 await OrderItems.findByPk(plainCart.orderItems[i].id)
               ).update({
-                quantity: req.body.quantity,
+                quantity: plainCart.orderItems[i].quantity + req.body.quantity,
               });
               updated = true;
             }
@@ -363,6 +364,8 @@ router.delete(
         include: [{ model: OrderItems, include: [Cards] }],
         where: { userId: req.params.userId, isOpen: true },
       });
+      // update the cart total
+      await cart.updateTotal();
       res.json(cart);
     } catch (error) {
       next(error);
