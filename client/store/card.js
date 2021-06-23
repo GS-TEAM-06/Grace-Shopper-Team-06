@@ -46,6 +46,7 @@ export const fetchCard = (id) => async (dispatch) => {
 };
 
 export const createCardThunk = (card, history) => async (dispatch) => {
+  card.price = Math.round(card.price * 100);
   const { data: createdCard } = await axios.post('/api/cards/', card, {
     headers: { token: window.localStorage.token },
   });
@@ -54,6 +55,7 @@ export const createCardThunk = (card, history) => async (dispatch) => {
 };
 
 export const updateCardThunk = (singleCard, history) => async (dispatch) => {
+  singleCard.price = Math.round(singleCard.price * 100);
   const { data: updatedCard } = await axios.put(
     `/api/cards/${singleCard.id}`,
     singleCard,

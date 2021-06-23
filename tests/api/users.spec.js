@@ -29,7 +29,8 @@ describe('User routes', () => {
       password: 'user1',
     });
 
-    user1Cart = await Orders.create({ userId: user1.id, total: 0 });
+    // user1Cart = await Orders.create({ userId: user1.id, total: 0 });
+    user1Cart = await Orders.findOne({ where: { userId: user1.id } });
 
     user2 = await User.create({
       username: 'user2',
@@ -49,8 +50,9 @@ describe('User routes', () => {
   });
 
   afterEach(async () => {
-    user1.destroy();
-    user2.destroy();
+    await user1Cart.destroy();
+    await user1.destroy();
+    await user2.destroy();
   });
 
   describe('user info routes', () => {
@@ -174,12 +176,19 @@ describe('User routes', () => {
         .send({ cardId: 2, quantity: 2 })
         .expect(200);
 
-      let cart = await Orders.findByPk(user1Cart.id, {
-        include: [{ model: OrderItems, include: [{ model: Cards }] }],
-      });
+      // let cart = await Orders.findByPk(user1Cart.id, {
+      //   include: [{ model: OrderItems, include: [{ model: Cards }] }],
+      // });
 
-      // console.log('???????');
-      // console.log((await cart.get({ plain: true })).orderItems);
+      let { data: cart } = await request(app)
+        .get(`/api/users/${user1.id}/cart`)
+        .set({ token: user1Token })
+        .expect(200);
+
+      console.log('??????? cart by findbypk');
+      console.log(cart);
+      console.log('cart by ref:');
+      console.log(user1Cart);
       let total = (await cart.get({ plain: true })).orderItems.reduce(
         (acc, orderItem) => {
           return (acc += orderItem.price);

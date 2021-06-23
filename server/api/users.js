@@ -87,6 +87,7 @@ router.get(
       const cart = await Orders.findOne({
         include: [{ model: OrderItems, include: [Cards] }],
         where: { userId: req.params.userId, isOpen: true },
+        order: [['updatedAt', 'DESC']],
       });
       if (cart === null) {
         const error = new Error('Not found!');
@@ -94,31 +95,33 @@ router.get(
         next(error);
       }
 
-      res.json(cart.get({ plain: true }));
+      // update the cart total
+      await cart.updateTotal();
+      res.json(cart);
     } catch (err) {
       next(err);
     }
   }
 );
 
-//ADD ITEM TO CART
-router.post('/', isAuthenticated, isSameUser, async (req, res, next) => {
-  try {
-    const singleItem = await OrderItems.create(req.body);
-    res.json(singleItem);
-  } catch (error) {
-    next(error);
-  }
-});
+// //ADD ITEM TO CART
+// router.post('/', isAuthenticated, isSameUser, async (req, res, next) => {
+//   try {
+//     const singleItem = await OrderItems.create(req.body);
+//     res.json(singleItem);
+//   } catch (error) {
+//     next(error);
+//   }
+// });
 
-//UPDATE ITEM IN CART: cardId, quantity method
+//UPDATE ITEM IN CART: cardId, works with BOTH increment and quantity provided in body methods
 router.put(
   '/:userId/cart',
   isAuthenticated,
   isSameUser,
   async (req, res, next) => {
     try {
-      console.log('api reqbody->', req.body);
+      // console.log('api reqbody->', req.body);
       // find the cart instance that matches this user's id
       let cart = await Orders.findOne({
         include: [{ model: OrderItems, include: [Cards] }],
@@ -137,11 +140,6 @@ router.put(
         cart = await cart.update({ isOpen: false });
         res.json(cart);
       } else {
-        // did we get a quantity? Default is to add 1
-        if (typeof req.body.quantity === 'undefined') {
-          req.body.quantity = 1;
-        }
-
         // get a plain object for the cart instance dataValues
         let plainCart = await cart.get({ plain: true });
 
@@ -152,7 +150,7 @@ router.put(
         if (card === null) {
           const error = new Error('Card not found!');
           error.status = 404;
-          next(error);
+          throw error;
         }
 
         // walk through the orderItems in this cart
@@ -164,8 +162,13 @@ router.put(
           if (
             Number(plainCart.orderItems[i].cardId) === Number(req.body.cardId)
           ) {
+            // did we get a quantity? Default is to add 1
+            if (typeof req.body.quantity === 'undefined') {
+              req.body.quantity = plainCart.orderItems[i].quantity + 1;
+            }
+            req.body.quantity = Number(req.body.quantity);
             // if quantity is 0 we need to actually delete the line
-            if (Number(plainCart.orderItems[i].quantity) === 0) {
+            if (req.body.quantity === 0) {
               orderItem = await (
                 await OrderItems.findByPk(plainCart.orderItems[i].id)
               ).destroy();
@@ -174,7 +177,7 @@ router.put(
               orderItem = await (
                 await OrderItems.findByPk(plainCart.orderItems[i].id)
               ).update({
-                quantity: plainCart.orderItems[i].quantity + 1,
+                quantity: req.body.quantity,
               });
               updated = true;
             }
@@ -189,10 +192,13 @@ router.put(
         }
 
         // if we get here with orderItem === false, we didn't have the card in the cart already
-        if (updated === false) {
+        if (updated === false && req.body.quantity != 0) {
+          if (typeof req.body.quantity != 'number') {
+            req.body.quantity = 1;
+          }
           // create new OrderItem with cardId = req.body.cardId
           orderItem = await OrderItems.create({
-            quantity: 1,
+            quantity: req.body.quantity,
             cardId: req.body.cardId,
             orderId: plainCart.id,
           });
@@ -202,8 +208,11 @@ router.put(
         cart = await Orders.findOne({
           include: [{ model: OrderItems, include: [Cards] }],
           where: { userId: req.params.userId, isOpen: true },
+          order: [['updatedAt', 'DESC']],
         });
 
+        // update the cart total
+        await cart.updateTotal();
         // send it back, in JSON.stringify format! (this is very confusing that sequelize magically does this)
         res.json(cart);
       }
@@ -251,7 +260,7 @@ router.delete(
   isAuthenticated,
   isSameUser,
   async (req, res, next) => {
-    console.log('Am I in the delete route?');
+    // console.log('Am I in the delete route?');
     try {
       // find the cart instance that matches this user's id
       let cart = await Orders.findOne({
@@ -277,14 +286,14 @@ router.delete(
           Number(plainCart.orderItems[i].cardId) === Number(req.body.cardId)
         ) {
           if (Number(plainCart.orderItems[i].quantity) > 1) {
-            console.log('Line 277-->');
+            // console.log('Line 277-->');
             let orderItem = await (
               await OrderItems.findByPk(plainCart.orderItems[i].id)
             ).update(
               { quantity: plainCart.orderItems[i].quantity - 1 }
               // { where: { cardId: plainCart.orderItems[i].cardId } }
             );
-            console.log('orderItem--->', orderItem);
+            // console.log('orderItem--->', orderItem);
             // else if card quantity is only 1, delete the orderItem
           } else if (plainCart.orderItems[i].quantity === 1) {
             await (
@@ -299,7 +308,10 @@ router.delete(
       cart = await Orders.findOne({
         include: [{ model: OrderItems, include: [Cards] }],
         where: { userId: req.params.userId, isOpen: true },
+        order: [['updatedAt', 'DESC']],
       });
+      // update the cart total
+      await cart.updateTotal();
       res.json(cart);
     } catch (error) {
       next(error);

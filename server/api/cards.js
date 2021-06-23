@@ -8,8 +8,16 @@ const { isAuthenticated, isSameUser, isAdmin } = require('../authMiddleware');
 
 // GET /api/cards
 router.get('/', async (req, res, next) => {
+  let category = null;
+  if (
+    typeof req.query.category !== 'undefined' &&
+    req.query.category !== 'all'
+  ) {
+    category = { where: { category: req.query.category } };
+  }
+
   try {
-    const cards = await Cards.findAll();
+    const cards = await Cards.findAll({ ...category });
     res.json(cards);
   } catch (err) {
     next(err);

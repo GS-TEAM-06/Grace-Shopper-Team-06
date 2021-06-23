@@ -1,8 +1,8 @@
-import { CardContent } from "@material-ui/core";
-import React, { Component } from "react";
-import { connect } from "react-redux";
-import { Link } from "react-router-dom";
-import { fetchCart, removedFromCart, addedToCart } from "../store/cart";
+import { CardContent } from '@material-ui/core';
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
+import { fetchCart, removedFromCart, addedToCart } from '../store/cart';
 
 class Cart extends Component {
   constructor() {
@@ -14,7 +14,7 @@ class Cart extends Component {
   }
 
   componentDidMount() {
-    console.log("mounting userID->", this.props);
+    console.log('mounting userID->', this.props);
     let userId = this.props.user.id;
     this.props.fetchCart(userId);
   }
@@ -22,14 +22,14 @@ class Cart extends Component {
   handleRemove(event) {
     const userId = this.props.user.id;
     const cardId = event.target.value;
-    console.log("cardId->", cardId);
+    console.log('cardId->', cardId);
     this.props.removedFromCart(userId, cardId);
   }
 
   handleAdd(event) {
     const userId = this.props.user.id;
     const cardId = event.target.value;
-    console.log("cardId->", cardId);
+    console.log('cardId->', cardId);
     this.props.addedToCart(userId, cardId);
   }
   // handleIncreaseQuantity(cardId) {
@@ -41,7 +41,7 @@ class Cart extends Component {
   // }
 
   render() {
-    const { orderItems } = this.props.cart;
+    const { orderItems, total } = this.props.cart;
     const hasOrderItems = orderItems && orderItems.length;
     // console.log("order items?->", orderItems);
     let items = hasOrderItems ? (
@@ -56,7 +56,7 @@ class Cart extends Component {
                 <p>Name: {objectItem.card.name}</p>
               </Link>
               <p>Description: {objectItem.card.description}</p>
-              <p>Price: {objectItem.card.price}</p>
+              <p>Price: {'$' + (objectItem.price / 100).toFixed(2)}</p>
               <p>Quantity: {objectItem.quantity}</p>
 
               <button value={objectItem.cardId} onClick={this.handleAdd}>
@@ -77,6 +77,7 @@ class Cart extends Component {
       <div>
         <h5>You have ordered:</h5>
         <ul>{items}</ul>
+        <h5>Total: {'$' + (total / 100).toFixed(2)}</h5>
       </div>
     );
   }
