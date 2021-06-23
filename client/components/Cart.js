@@ -96,14 +96,20 @@ class Cart extends Component {
         </div>
       </div>
     ) : (
-      <p>Nothing</p>
+      <p>Cart is Empty</p>
     );
 
     return (
       <div>
         <h5>You have ordered:</h5>
         <ul>{items}</ul>
+<<<<<<< HEAD
         <h5>Total: {'$' + (total / 100).toFixed(2)}</h5>
+=======
+        <button type="submit" className="checkout">
+          <Link to="/checkout">Checkout</Link>
+        </button>
+>>>>>>> f1eeb16d898d7636f1aa6ebf7378b7ddc28e824f
       </div>
     );
   }
