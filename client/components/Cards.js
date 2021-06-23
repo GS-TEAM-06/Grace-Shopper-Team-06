@@ -6,23 +6,34 @@ import { deleteCardThunk } from "../store/card";
 import { Link } from "react-router-dom";
 import Home from "./Home";
 import axios from "axios";
+import CreateCard from "./CreateCard";
 
 class Cards extends Component {
   constructor(props) {
     super(props);
 
+    this.state = { category: 'all' };
+
     this.handleClick = this.handleClick.bind(this);
-    this.handleSubmit = this.createCardClick(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+    this.categoryChange = this.categoryChange.bind(this);
   }
 
   componentDidMount() {
-    this.props.fetchCards();
+    this.props.fetchCards(this.state.category);
   }
 
   async addToGuestCart(cardId) {
-    const { data } = await axios.get(`/api/cards/${cardId}`);
+    const {data} = await axios.get(`/api/cards/${cardId}`);
     let guestCart = JSON.parse(localStorage.getItem("guestCart"));
-    guestCart.push(data);
+    let guestCartId = guestCart.map((card) => card.id);
+    let index = guestCartId.indexOf(data.id);
+    if (index === -1) {
+      data.quantity = 1;
+      guestCart.push(data);
+    } else {
+      guestCart[index].quantity += 1;
+    }
     localStorage.guestCart = JSON.stringify(guestCart);
   }
 
@@ -39,12 +50,18 @@ class Cards extends Component {
   handleSubmit(event, CardId) {
     event.preventDefault();
     this.props.deleteCard(CardId);
+    this.props.fetchCards(this.state.category);
+  }
+
+  categoryChange(event) {
+    this.setState({ category: event.target.value });
+    this.props.fetchCards(event.target.value);
   }
 
   render() {
-    const { isLoggedIn } = this.props;
-    const { user } = this.props;
-    const { cards } = this.props;
+    const {isLoggedIn} = this.props;
+    const {user} = this.props;
+    const {cards} = this.props;
     return (
       <div>
         <div>
@@ -58,6 +75,12 @@ class Cards extends Component {
             </div>
           )}
         </div>
+          <select name="category" id="category" onChange={this.categoryChange}>
+            <option value="all">All categories</option>
+            <option value="Magic: The Gathering">Magic: The Gathering</option>
+            <option value="Pokemon">Pokemon</option>
+            <option value="Yu-Gi-Oh!">Yu-Gi-Oh!</option>
+          </select>
         {cards.map((card) => {
           return (
             <div key={card.id}>
@@ -65,7 +88,7 @@ class Cards extends Component {
                 <Link to={`/cards/${card.id}`}>{card.name}</Link>
               </h3>
               <img src={card.imageUrl} />
-              <h5>{card.price}</h5>
+              <h5>{'$' + (card.price / 100).toFixed(2)}</h5>
               <button type="button" value={card.id} onClick={this.handleClick}>
                 Add To Cart
               </button>
@@ -73,7 +96,7 @@ class Cards extends Component {
                 <button
                   type="submit"
                   className="remove"
-                  onClick={(event) => handleSubmit(event, card.id)}
+                  onClick={(event) => this.handleSubmit(event, card.id)}
                 >
                   X
                 </button>
@@ -103,10 +126,10 @@ const mapState = (state) => {
   };
 };
 
-const mapDispatch = (dispatch, { history }) => {
+const mapDispatch = (dispatch, {history}) => {
   return {
     addedToCart: (userId, cardId) => dispatch(addedToCart(userId, cardId)),
-    fetchCards: () => dispatch(fetchCards()),
+    fetchCards: (category) => dispatch(fetchCards(category)),
     deleteCard: (cardId) => dispatch(deleteCardThunk(cardId)),
   };
 };

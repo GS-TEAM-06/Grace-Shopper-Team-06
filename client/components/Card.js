@@ -1,8 +1,9 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
-import { fetchCard } from "../store/card";
-import { addedToCart } from "../store/cart";
-import axios from "axios";
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { fetchCard } from '../store/card';
+import { addedToCart } from '../store/cart';
+import axios from 'axios';
+import UpdateCard from './UpdateCard';
 
 class Card extends Component {
   constructor(props) {
@@ -18,7 +19,14 @@ class Card extends Component {
   async addToGuestCart(cardId) {
     const { data } = await axios.get(`/api/cards/${cardId}`);
     let guestCart = JSON.parse(localStorage.getItem("guestCart"));
-    guestCart.push(data);
+    let guestCartId = guestCart.map((card) => card.id)
+    let index = guestCartId.indexOf(data.id)
+    if (index === -1) {
+        data.quantity = 1
+        guestCart.push(data);
+    } else {
+        guestCart[index].quantity += 1
+    }
     localStorage.guestCart = JSON.stringify(guestCart);
   }
 
@@ -40,7 +48,7 @@ class Card extends Component {
         {/* <h3>{singleCard.quantity}</h3> */}
         <img src={singleCard.imageUrl} />
         <h6>{singleCard.description}</h6>
-        <h3>{singleCard.price}</h3>
+        <h3>{'$' + (singleCard.price / 100).toFixed(2)}</h3>
         <button type="button" value={singleCard.id} onClick={this.handleClick}>
           Add To Cart
         </button>

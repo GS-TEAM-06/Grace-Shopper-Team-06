@@ -8,18 +8,18 @@
 
 ### As a customer/visitor, I want to be able to:
 
-- access a deployed version of the website so I can browse and purchase products.
-- view all available products so I can pick from a variety.
-- view a single product so I can see more details.
-- add a product to my cart so I can collect my desired products in one place.
-- edit my cart if I change my mind:
-  - change the quantity of a product in my cart.
-  - remove a product in my cart.
-  - _No one else should be able to edit my cart except me._
-- "checkout" the items in my cart so I can purchase my desired goods.
-  - _Think of a typical user experience on popular websites from a guest user and logged-in user perspective._
-  - _You can just start with by simulating the experience of checking out with a simple confirmation page._
-- create an account so I can have a logged-in experience.
+[]- access a deployed version of the website so I can browse and purchase products.
+[]- view all available products so I can pick from a variety.
+[]- view a single product so I can see more details.
+[]- add a product to my cart so I can collect my desired products in one place.
+[]- edit my cart if I change my mind:
+[] - change the quantity of a product in my cart.
+[] - remove a product in my cart.
+[] - _No one else should be able to edit my cart except me._
+[]- "checkout" the items in my cart so I can purchase my desired goods.
+[] - _Think of a typical user experience on popular websites from a guest user and logged-in user perspective._
+[] - _You can just start with by simulating the experience of checking out with a simple confirmation page._
+[]- create an account so I can have a logged-in experience.
 
 ### As a logged-in customer, I want to be able to:
 
