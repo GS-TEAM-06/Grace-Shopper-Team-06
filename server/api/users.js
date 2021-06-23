@@ -104,15 +104,6 @@ router.get(
   }
 );
 
-// //ADD ITEM TO CART
-// router.post('/', isAuthenticated, isSameUser, async (req, res, next) => {
-//   try {
-//     const singleItem = await OrderItems.create(req.body);
-//     res.json(singleItem);
-//   } catch (error) {
-//     next(error);
-//   }
-// });
 
 //UPDATE ITEM IN CART: cardId, works with BOTH increment and quantity provided in body methods
 router.put(
