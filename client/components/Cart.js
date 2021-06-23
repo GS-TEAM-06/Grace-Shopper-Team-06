@@ -1,13 +1,13 @@
-import { CardContent } from "@material-ui/core";
-import React, { Component } from "react";
-import { connect } from "react-redux";
-import { Link } from "react-router-dom";
+import { CardContent } from '@material-ui/core';
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 import {
   fetchCart,
   decreasedFromCart,
   addedToCart,
   removedFromCart,
-} from "../store/cart";
+} from '../store/cart';
 
 class Cart extends Component {
   constructor() {
@@ -28,7 +28,7 @@ class Cart extends Component {
   handleSubtract(event) {
     const userId = this.props.user.id;
     const cardId = event.target.value;
-    console.log("cardId->", cardId);
+    console.log('cardId->', cardId);
     this.props.decreasedFromCart(userId, cardId);
   }
 
@@ -46,7 +46,7 @@ class Cart extends Component {
   }
 
   clearCart() {
-    console.log("this.props.cart->", this.props.cart);
+    console.log('this.props.cart->', this.props.cart);
     let userId = this.props.user.id;
     this.props.cart.orderItems = [];
     this.props.fetchCart(userId);
@@ -65,12 +65,12 @@ class Cart extends Component {
               <div>
                 <img src={objectItem.card.imgUrl} />
 
-              <Link to={`/cards/${objectItem.card.id}`}>
-                <p>Name: {objectItem.card.name}</p>
-              </Link>
-              <p>Description: {objectItem.card.description}</p>
-              <p>Price: {'$' + (objectItem.price / 100).toFixed(2)}</p>
-              <p>Quantity: {objectItem.quantity}</p>
+                <Link to={`/cards/${objectItem.card.id}`}>
+                  <p>Name: {objectItem.card.name}</p>
+                </Link>
+                <p>Description: {objectItem.card.description}</p>
+                <p>Price: {'$' + (objectItem.price / 100).toFixed(2)}</p>
+                <p>Quantity: {objectItem.quantity}</p>
 
                 <button value={objectItem.cardId} onClick={this.handleAdd}>
                   +
@@ -103,20 +103,17 @@ class Cart extends Component {
       <div>
         <h5>You have ordered:</h5>
         <ul>{items}</ul>
-<<<<<<< HEAD
         <h5>Total: {'$' + (total / 100).toFixed(2)}</h5>
-=======
         <button type="submit" className="checkout">
           <Link to="/checkout">Checkout</Link>
         </button>
->>>>>>> f1eeb16d898d7636f1aa6ebf7378b7ddc28e824f
       </div>
     );
   }
 }
 
 const mapState = (state) => {
-  console.log("state->", state);
+  console.log('state->', state);
   return {
     cart: state.cart,
     user: state.auth,
