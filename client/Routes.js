@@ -11,6 +11,7 @@ import User from "./components/User";
 import CreateCard from "./components/CreateCard";
 import UpdateCard from "./components/UpdateCard";
 import GuestCart from "./components/GuestCart";
+import GuestCheckout from "./components/GuestCheckout"
 
 function createGuestCart() {
   const guestCart = [];
@@ -62,6 +63,7 @@ class Routes extends Component {
             <Route path="/login" component={Login} />
             <Route path="/signup" component={Signup} />
             <Route path="/cart" component={GuestCart} />
+            <Route path="/checkout" component={GuestCheckout} />
           </Switch>
         )}
       </div>

@@ -118,6 +118,7 @@ class GuestCart extends Component {
         <h5>Guest Cart:</h5>
         <ul>{cards}</ul>
           <h5>Total Cart Price: ${(guestCart.reduce((accum, curr) => accum + (curr.price * curr.quantity), 0)/100).toFixed(2)}</h5>
+          <button><Link to={'/checkout'}>Checkout</Link></button>
       </div>
     );
   }
