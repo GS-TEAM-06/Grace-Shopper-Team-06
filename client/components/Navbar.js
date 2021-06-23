@@ -28,7 +28,12 @@ const Navbar = (props) => {
           >
             <Grid item>
               <Typography variant="h4">
-                <Link to="/" className="navbar">Toad&Troll</Link>
+                <Link to="/">
+                  <img src="/favicon.ico" height="70" width="auto" />
+                </Link>
+                <Link to="/" className="navbar">
+                  Toad&Troll
+                </Link>
               </Typography>
             </Grid>
             <Grid item>
@@ -36,9 +41,15 @@ const Navbar = (props) => {
                 {props.isLoggedIn ? (
                   <div>
                     {/* The navbar will show these links after you log in */}
-                    <Link to="/" className="navbar">Main</Link>
-                    <Link className="navbar" to="/cart">Cart</Link>
-                    <Link className="navbar" to="/user">My Profile</Link>
+                    <Link to="/" className="navbar">
+                      Main
+                    </Link>
+                    <Link className="navbar" to="/cart">
+                      Cart
+                    </Link>
+                    <Link className="navbar" to="/user">
+                      My Profile
+                    </Link>
                     <a className="navbar" href="#" onClick={props.handleClick}>
                       Logout
                     </a>
@@ -46,10 +57,18 @@ const Navbar = (props) => {
                 ) : (
                   <div>
                     {/* The navbar will show these links before you log in */}
-                    <Link to="/" className="navbar">Main</Link>
-                    <Link className="navbar" to="/cart">Cart</Link>
-                    <Link className="navbar" to="/signup">Sign Up</Link>
-                    <Link className="navbar" to="/login">Login</Link>
+                    <Link to="/" className="navbar">
+                      Main
+                    </Link>
+                    <Link className="navbar" to="/cart">
+                      Cart
+                    </Link>
+                    <Link className="navbar" to="/signup">
+                      Sign Up
+                    </Link>
+                    <Link className="navbar" to="/login">
+                      Login
+                    </Link>
                   </div>
                 )}
               </nav>

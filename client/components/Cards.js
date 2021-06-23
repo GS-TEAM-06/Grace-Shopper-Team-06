@@ -47,7 +47,7 @@ class Cards extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {category: "all"};
+    this.state = {category: "all", addQty: {}};
 
     this.handleClick = this.handleClick.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -58,39 +58,55 @@ class Cards extends Component {
     this.props.fetchCards(this.state.category);
   }
 
-  async addToGuestCart(cardId) {
+  async addToGuestCart(cardId, cardQty) {
+    if (!cardQty) {
+      cardQty = 1;
+    }
+    cardQty = Number(cardQty);
     const {data} = await axios.get(`/api/cards/${cardId}`);
     let guestCart = JSON.parse(localStorage.getItem("guestCart"));
     let guestCartId = guestCart.map((card) => card.id);
     let index = guestCartId.indexOf(data.id);
     if (index === -1) {
-      data.quantity = 1;
+      data.quantity = cardQty;
       guestCart.push(data);
     } else {
-      guestCart[index].quantity += 1;
+      guestCart[index].quantity = Number(guestCart[index].quantity) + cardQty;
     }
     localStorage.guestCart = JSON.stringify(guestCart);
   }
 
   handleClick(event) {
+    event.preventDefault();
+    const cardsId = event.target.value;
+    if (this.state.addQty[cardsId] == 0) return;
     if (this.props.user.id) {
       const usersId = this.props.user.id;
       const cardsId = event.currentTarget.value;
-      this.props.addedToCart(usersId, cardsId);
+      this.props.addedToCart(usersId, cardsId, this.state.addQty[cardsId]);
     } else {
-      this.addToGuestCart(event.currentTarget.value);
+      this.addToGuestCart(
+        event.currentTarget.value,
+        this.state.addQty[cardsId]
+      );
     }
   }
 
   handleSubmit(event, CardId) {
+    console.log(event);
     event.preventDefault();
     this.props.deleteCard(CardId);
     this.props.fetchCards(this.state.category);
   }
 
   categoryChange(event) {
+    event.preventDefault();
     this.setState({category: event.target.value});
     this.props.fetchCards(event.target.value);
+  }
+
+  handleQtyChange(event, cardId) {
+    this.setState({addQty: {...{[cardId]: event.target.value}}});
   }
 
   render() {
@@ -153,12 +169,25 @@ class Cards extends Component {
                         </Typography>
                         <img className={classes.card} src={card.imageUrl} />
                         <h5>{"$" + (card.price / 100).toFixed(2)}</h5>
+                        <input
+                          type="text"
+                          size="1"
+                          value={
+                            !this.state.addQty[card.id]
+                              ? 1
+                              : this.state.addQty[card.id]
+                          }
+                          onChange={(event) =>
+                            this.handleQtyChange(event, card.id)
+                          }
+                        />
                         <Button
                           item="true"
                           variant="contained"
                           color="primary"
                           value={card.id}
                           onClick={this.handleClick}
+                          disabled={this.props.cartStatus === 'LOADING'}
                         >
                           Add To Cart
                         </Button>
@@ -186,14 +215,6 @@ class Cards extends Component {
             </Grid>
           </Grid>
         </Grid>
-        {/* {isLoggedIn && user.admin ? (
-          <div>
-            <h1>CREATE NEW CARD</h1>
-            <CreateCard history={this.props.history} />
-          </div>
-        ) : (
-          <div />
-        )} */}
       </div>
     );
   }
@@ -203,12 +224,14 @@ const mapState = (state) => {
   return {
     cards: state.cards,
     user: state.auth,
+    cartStatus: state.cartStatus,
   };
 };
 
 const mapDispatch = (dispatch, {history}) => {
   return {
-    addedToCart: (userId, cardId) => dispatch(addedToCart(userId, cardId)),
+    addedToCart: (userId, cardId, qty) =>
+      dispatch(addedToCart(userId, cardId, qty)),
     fetchCards: (category) => dispatch(fetchCards(category)),
     deleteCard: (cardId) => dispatch(deleteCardThunk(cardId)),
   };
