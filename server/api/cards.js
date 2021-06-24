@@ -1,17 +1,17 @@
-const router = require('express').Router();
+const router = require("express").Router();
 const {
   models: { Cards },
-} = require('../db');
-const { isAuthenticated, isSameUser, isAdmin } = require('../authMiddleware');
+} = require("../db");
+const { isAuthenticated, isSameUser, isAdmin } = require("../authMiddleware");
 
 /////// all routes mounted on /api/cards
 
 // GET /api/cards
-router.get('/', async (req, res, next) => {
+router.get("/", async (req, res, next) => {
   let category = null;
   if (
-    typeof req.query.category !== 'undefined' &&
-    req.query.category !== 'all'
+    typeof req.query.category !== "undefined" &&
+    req.query.category !== "all"
   ) {
     category = { where: { category: req.query.category } };
   }
@@ -27,7 +27,7 @@ router.get('/', async (req, res, next) => {
 // change
 
 // POST /api/cards
-router.post('/', isAuthenticated, isAdmin, async (req, res, next) => {
+router.post("/", isAuthenticated, isAdmin, async (req, res, next) => {
   // console.log(req.body);
   try {
     const result = await Cards.create({
@@ -45,14 +45,14 @@ router.post('/', isAuthenticated, isAdmin, async (req, res, next) => {
 });
 
 // GET /api/cards/:id
-router.get('/:id', async (req, res, next) => {
+router.get("/:id", async (req, res, next) => {
   try {
     const card = await Cards.findByPk(req.params.id);
     if (card === null) {
       // const error = new Error('Card not found!');
       // error.status = 404;
       // next(error);
-      res.status(404).end('Card not found!');
+      res.status(404).end("Card not found!");
     } else {
       res.json(card);
     }
@@ -62,18 +62,12 @@ router.get('/:id', async (req, res, next) => {
 });
 
 // PUT /api/cards/:id
-router.put('/:id', isAuthenticated, isAdmin, async (req, res, next) => {
+router.put("/:id", isAuthenticated, isAdmin, async (req, res, next) => {
   // update a card
   try {
-    let card = await Cards.findByPk(req.params.id);
-    card.name = req.body.name;
-    card.imageUrl = req.body.imageUrl;
-    card.price = req.body.price;
-    card.description = req.body.description;
-    card.quantity = req.body.quantity;
-    card.category = req.body.category;
+    const card = await Cards.findByPk(req.params.id);
     card = await card.save();
-    res.json(card);
+    res.json(await card.update(req.body));
   } catch (error) {
     error.status = 500;
     next(error);
@@ -81,7 +75,7 @@ router.put('/:id', isAuthenticated, isAdmin, async (req, res, next) => {
 });
 
 // DELETE /api/cards/:id
-router.delete('/:id', isAuthenticated, isAdmin, async (req, res, next) => {
+router.delete("/:id", isAuthenticated, isAdmin, async (req, res, next) => {
   try {
     const result = await Cards.destroy({ where: { id: req.params.id } });
     if (result === 0) {
